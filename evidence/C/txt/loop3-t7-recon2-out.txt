@@ -1,0 +1,44 @@
+﻿=== JVMs ===
+default-java
+java-1.25.0-openjdk-amd64
+java-25-openjdk-amd64
+--- javac ---
+bash: line 6: javac: command not found
+=== jars on system ===
+=== msf shiro module ===
+shiro_rememberme_v124_deserialize.rb
+=== msf ysoserial json ===
+-rw-r--r-- 1 root root 414380 May 26 08:02 /usr/share/metasploit-framework/data/ysoserial_payloads.json
+{
+  "none": {
+    "AspectJWeaver": {
+      "status": "unsupported"
+    },
+    "BeanShell1": {
+      "status": "dynamic",
+      "lengthOffset": [
+        2624,
+        2635
+      ],
+      "bufferOffset": [
+        2894,
+        2905,
+        2913,
+        2935,
+        2943,
+        2965,
+        2973,
+        2996,
+        3004,
+        3030,
+        3038,
+        3061,
+        3069,
+        3092,
+=== java AES self-test against Shiro default key ===
+bash: line 35: javac: command not found
+Error: Could not find or load main class AesProbe
+Caused by: java.lang.ClassNotFoundException: AesProbe
+=== DONE ===
+{"rc": 0, "stdout_len": 954, "stderr_len": 0}
+

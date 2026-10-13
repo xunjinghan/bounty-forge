@@ -1,0 +1,7 @@
+﻿--- db_before_restore: {"rows": "A.I.M.\tA.I.M. or Authentication Is Missing\nbee\tx"}
+--- login: {"status": 302, "loc": "portal.php", "phpsessid": "517aa0b0e56ddc10ffdb7f9af5efafb7"}
+--- restore_request: {"status": 200, "resp": "bee's secret has been reset!"}
+--- db_after_restore: {"rows": "A.I.M.\tA.I.M. or Authentication Is Missing\nbee\tAny bugs?"}
+{"rc": "ok"}
+{"rc": 0, "stdout_len": 368, "stderr_len": 0}
+

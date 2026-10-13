@@ -1,0 +1,12 @@
+﻿--- login: {"status": 302, "loc": "portal.php", "phpsessid": "ab65f6478a8d44b69ed560e4a7608065"}
+--- b2_A_internal_entity_in_login: {"status": 200, "seclev": "0", "resp_len": 47, "resp": "loop3canary_nosuchuser's secret has been reset!"}
+--- b2_B_file_entity_in_login: {"status": 200, "seclev": "0", "resp_len": 17, "resp": "An error occured!"}
+--- b2_C_file_entity_missing_in_login: {"status": 200, "seclev": "0", "resp_len": 17, "resp": "An error occured!"}
+--- b2_D_undefined_entity_in_login: {"status": 200, "seclev": "0", "resp_len": 824, "resp": "<br /> <b>Warning</b>:  simplexml_load_string(): Entity: line 2: parser error : Entity 'undefined_loop3' not defined in <b>/var/www/html/bWAPP/xxe-2.php</b> on line <b>32</b><br /> <br /> <b>Warning</b>:  simplexml_load_string(): &lt;reset&gt;&lt;login&gt;&amp;undefined_loop3;&lt;/login&gt;&lt;secret&gt;x&lt;/secret&gt;&lt;/reset&gt; in <b>/var/www/html/bWAPP/xxe-2.php</b> on line <b>32</b><br /> "}
+--- b2_E_plain_no_doctype: {"status": 200, "seclev": "0", "resp_len": 36, "resp": "plain_loop3's secret has been reset!"}
+--- b2_F_medium_file_entity_in_login: {"status": 200, "seclev": "1", "resp_len": 28, "resp": "bee's secret has been reset!"}
+--- b2_G_high_file_entity_in_login: {"status": 200, "seclev": "2", "resp_len": 28, "resp": "bee's secret has been reset!"}
+--- tooling: {"chromium": "/usr/bin/chromium", "chromium-browser": "", "firefox": "/usr/bin/firefox", "chromedriver": "/usr/bin/chromedriver", "geckodriver": "/usr/bin/geckodriver", "curl": "/usr/bin/curl", "chromium_version": "Chromium 148.0.7778.178 built on Debian GNU/Linux forky/sid", "chromium_headless_probe": "<html><head></head><body></body></html> ", "sed_available": "/usr/bin/sed", "selenium": "4.31.1", "websocket": "1.9.0", "websockets": "16.0", "playwright": "ok"}
+{"rc": "ok", "steps": 9}
+{"rc": 0, "stdout_len": 1831, "stderr_len": 0}
+

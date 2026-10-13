@@ -1,0 +1,9 @@
+﻿
+      path = File.join(Msf::Config.data_directory, PAYLOAD_FILENAME)
+                          ^^^^^^^^
+Did you mean?  RbConfig
+	from /usr/share/metasploit-framework/lib/msf/util/java_deserialization.rb:13:in `ysoserial_payload'
+	from /tmp/t7-msf-check.rb:4:in `<main>'
+=== DONE ===
+{"rc": 0, "stdout_len": 284, "stderr_len": 0}
+

@@ -1,0 +1,93 @@
+﻿=== systemctl ===
+active
+active
+=== bWAPP xxe/xml candidates (ls) ===
+-rwxr-xr-x  1 root root   645 Oct  8 21:06 phpinfo.php
+drwxr-xr-x  2 root root  4096 Oct  8 21:06 soap
+-rwxr-xr-x  1 root root  5322 Oct  8 21:06 ssrf.php
+-rwxr-xr-x  1 root root  1447 Oct  8 21:06 ws_soap.php
+-rwxr-xr-x  1 root root  8577 Oct  8 21:06 xmli_1.php
+-rwxr-xr-x  1 root root  7579 Oct  8 21:06 xmli_2.php
+-rwxr-xr-x  1 root root  5318 Oct  8 21:06 xxe-1.php
+-rwxr-xr-x  1 root root  2530 Oct  8 21:06 xxe-2.php
+--- grep -ril xxe in bWAPP ---
+/var/www/html/bWAPP/xxe-1.php
+/var/www/html/bWAPP/insecure_direct_object_ref_3.php
+/var/www/html/bWAPP/sm_dos_2.php
+/var/www/html/bWAPP/ssrf.php
+--- all php filenames mentioning xxe/xml/soap ---
+/var/www/html/bWAPP/ws_soap.php
+/var/www/html/bWAPP/xmli_1.php
+/var/www/html/bWAPP/xmli_2.php
+/var/www/html/bWAPP/xxe-1.php
+/var/www/html/bWAPP/xxe-2.php
+--- bwapp function list from functions.php ---
+/var/www/html/bWAPP/sqli_5.php:soap.php
+/var/www/html/bWAPP/ws_soap.php:soap.php
+=== DVWA modules dirs ===
+about.php
+CHANGELOG.md
+compose.yml
+config
+COPYING.txt
+database
+Dockerfile
+docs
+dvwa
+external
+favicon.ico
+hackable
+index.php
+instructions.php
+login.php
+logout.php
+phpinfo.php
+php.ini
+README.ar.md
+README.es.md
+README.fa.md
+README.fr.md
+README.id.md
+README.it.md
+README.ko.md
+README.md
+README.pl.md
+README.pt.md
+README.ru.md
+README.tr.md
+README.uk.md
+README.vi.md
+README.zh.md
+robots.txt
+SECURITY.md
+security.php
+security.txt
+setup.php
+tests
+vulnerabilities
+=== DVWA vulnerabilities dir ===
+api
+authbypass
+bac
+brute
+captcha
+cryptography
+csp
+csrf
+exec
+fi
+help.css
+help.js
+javascript
+open_redirect
+sqli
+sqli_blind
+upload
+view_help.php
+view_source_all.php
+view_source.php
+weak_id
+xss_d
+xss_r
+xss_s
+{"rc": 0, "stdout_len": 1720, "stderr_len": 0}

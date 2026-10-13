@@ -1,0 +1,22 @@
+﻿--- RATE_B1_traversal_etc_passwd: {"tries": 5, "ok": 5, "fail": []}
+--- RATE_B1_phpfilter_base64: {"tries": 5, "ok": 5, "fail": []}
+--- RATE_B1_negative_control_missing_file: {"tries": 3, "zero_content": 3}
+--- RATE_B1_RFI_negative: {"tries": 3, "sink_hits": 0, "executed": 0}
+--- RATE_B2_bwapp_native_internal_entity: {"tries": 5, "ok": 5, "fail": []}
+--- RATE_B2_external_entity_NOT_expanded: {"low_tries": 3, "low_entity_empty": 3, "medium_tries": 3, "medium_entity_empty": 3, "note": "bWAPP low/medium/high 均不展开 SYSTEM 实体（PHP 8.4 + libxml 2.15 默认）"}
+--- RATE_B3_token_required_blocked: {"tries": 3, "blocked": 3, "db_secret": "x"}
+--- RATE_B3_no_token_write: {"tries": 3, "ok": 3, "restored": 3, "fail": []}
+--- RATE_B4_session_fixation: {"tries": 3, "ok": 3, "fail": []}
+--- browser_ready: {"version": "148.0.7778.178"}
+--- RATE_B5_stored_xss_cookie_theft: {"tries": 3, "ok": 3, "fail": [], "leaked_cookie_sample": ["PHPSESSID=cfc0830c36953c469ebd14a7a8ed054a; security=low"]}
+--- CTRL_B5_level: {"level": "high", "executed": false, "sink_new": 3, "raw_script_in_dom": false, "escaped_in_dom": false, "document_cookie": "PHPSESSID=63e9f1ffbecf5d9f28f67344cfdbd530; security=high"}
+--- CTRL_B5_level: {"level": "impossible", "executed": false, "sink_new": 0, "raw_script_in_dom": false, "escaped_in_dom": true, "document_cookie": "security=impossible"}
+--- cleanup_guestbook: {"v": "4"}
+--- final_guestbook: {"v": "1\ttest\n2\t<script>XSS_S_MARK_66</script>\n3\t<script>XSS_S_MARK_66</script>"}
+--- final_guestbook_count: {"v": "3"}
+--- final_bwapp_secret: {"v": "A.I.M.\tA.I.M. or Authentication Is Missing\nbee\tAny bugs?"}
+--- final_blog: {"v": "0"}
+--- final_lo3_sessions: {"v": "0\n0"}
+{"rc": "ok", "rates": {"B1_traversal": {"tries": 5, "ok": 5, "fail": []}, "B1_phpfilter": {"tries": 5, "ok": 5, "fail": []}, "B1_RFI": {"tries": 3, "sink_hits": 0, "executed": 0}, "B2": {"tries": 5, "ok": 5, "fail": []}, "B2_external": {"low_tries": 3, "low_entity_empty": 3, "medium_tries": 3, "medium_entity_empty": 3}, "B3_token": {"tries": 3, "blocked": 3}, "B3_no_token": {"tries": 3, "ok": 3, "restored": 3, "fail": []}, "B4": {"tries": 3, "ok": 3, "fail": []}, "B5": {"tries": 3, "ok": 3, "fail": []}}}
+{"rc": 0, "stdout_len": 2205, "stderr_len": 0}
+

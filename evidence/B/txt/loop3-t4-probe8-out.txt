@@ -1,0 +1,20 @@
+﻿--- secret_before_any_test: {"value": "Any bugs?"}
+--- S1_control_medium_no_token: {"http": "POST /bWAPP/csrf_3.php", "security_level": "1", "origin_sent": "http://attacker.loop3.invalid", "status": 200, "resp_snippet": "<!DOCTYPE html> <html> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"> <!--<link rel=\"stylesheet\" type=\"text/css\" href=\"https://fonts.googleapis.com/css?famil", "invalid_token": true}
+--- S1_db_after: {"value": "Any bugs?", "unchanged": true}
+--- S2_crosssite_low_no_token: {"http": "POST /bWAPP/csrf_3.php", "security_level": "0", "origin_sent": "http://attacker.loop3.invalid", "status": 200, "resp_snippet": "<!DOCTYPE html> <html> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"> <!--<link rel=\"stylesheet\" type=\"text/css\" href=\"https://fonts.googleapis.com/css?famil", "changed": true}
+--- S2_db_after_write: {"value": "csrf-poc-100357", "mark": "csrf-poc-100357", "matches": true}
+--- S3_restore: {"resp_snippet": "<!DOCTYPE html> <html> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"> <!--<link rel=\"stylesheet\" type=\"text/css\" href=\"https://fonts.googleapis.com/css?famil", "value": "Any bugs?", "restored": true}
+--- evil_pages_written: {"files": ["/tmp/loop3-b3-evil-post.html", "/tmp/loop3-b3-evil-img.html", "/tmp/loop3-b3-evil-nav.html"], "origin": "file:// (opaque, 非 http(s) → 跨站)"}
+--- S4_victim_logged_in: {"url": "http://127.0.0.1/bWAPP/portal.php", "title": "bWAPP - Portal", "cookie": "security_level=0; PHPSESSID=f58f6a04ff6b1e52bf0e112937b0d7c6"}
+--- S4_BROWSERPOST_result: {"marker": "csrf-poc-BROWSERPOST", "db_before": "Any bugs?", "db_after": "csrf-poc-BROWSERPOST", "csrf_succeeded": true, "landed_url": "http://127.0.0.1/bWAPP/csrf_3.php"}
+--- S4_BROWSERPOST_restore: {"value": "Any bugs?", "restored": true}
+--- S4_BROWSERIMG_result: {"marker": "csrf-poc-BROWSERIMG", "db_before": "Any bugs?", "db_after": "Any bugs?", "csrf_succeeded": false, "landed_url": "file:///tmp/loop3-b3-evil-img.html"}
+--- S4_BROWSERNAV_result: {"marker": "csrf-poc-BROWSERNAV", "db_before": "Any bugs?", "db_after": "csrf-poc-BROWSERNAV", "csrf_succeeded": true, "landed_url": "http://127.0.0.1/bWAPP/csrf_3.php?action=change&secret=csrf-poc-BROWSERNAV&login=bee"}
+--- S4_BROWSERNAV_restore: {"value": "Any bugs?", "restored": true}
+--- S4_driver: {"ok": true}
+--- S5_set_cookie_bwapp: {"/bWAPP/login.php": "PHPSESSID=b50a87348cfd820fd7d177a55606de36; path=/", "/bWAPP/csrf_3.php": "", "/bWAPP/portal.php": ""}
+--- S5_no_samesite_no_httponly_confirmed: {"set_cookie": "", "samesite_present": false, "httponly_present": false}
+--- secret_final: {"value": "Any bugs?", "is_factory": true}
+{"rc": "ok", "secret": "Any bugs?"}
+{"rc": 0, "stdout_len": 2758, "stderr_len": 0}
+

@@ -1,0 +1,350 @@
+--- app.py.loop1-original
++++ app.py
+@@ -6,7 +6,8 @@
+ 仅依赖 Python 3 标准库；仅监听 127.0.0.1。
+ 启动:  python app.py [端口]          # 默认 8095
+ 重置:  python app.py --reset         # 重建数据库/上传目录到初始状态后启动
+-       GET  http://127.0.0.1:8095/__reset   （HTTP 一键复位，仅回环可达）
++       POST http://127.0.0.1:8095/__reset  body: confirm=RESET
++            （Loop2 A6 加固后：仅 POST + 仅回环 + 二次确认串）
+ """
+ 
+ import hashlib
+@@ -106,7 +107,8 @@
+     token TEXT PRIMARY KEY,
+     user_id INTEGER,
+     username TEXT,
+-    created_at INTEGER
++    created_at INTEGER,
++    csrf_token TEXT
+ );
+ -- 第七轮修复#3：优惠券领取记录，(user_id, code) 唯一约束保证幂等
+ CREATE TABLE coupon_claims (
+@@ -201,12 +203,26 @@
+         )
+ 
+ 
++def migrate_schema():
++    """Loop2 A3：老库补 sessions.csrf_token 列（幂等）。"""
++    conn = get_db()
++    try:
++        cols = {r["name"] for r in
++                conn.execute("PRAGMA table_info(sessions)").fetchall()}
++        if "csrf_token" not in cols:
++            conn.execute("ALTER TABLE sessions ADD COLUMN csrf_token TEXT")
++            conn.commit()
++    finally:
++        conn.close()
++
++
+ def ensure_initialized():
+     if not os.path.exists(DB_PATH):
+         reset_database()
+     else:
+         os.makedirs(UPLOAD_DIR, exist_ok=True)
+         os.makedirs(DOWNLOAD_DIR, exist_ok=True)
++        migrate_schema()
+         write_backup_file()
+ 
+ 
+@@ -220,10 +236,12 @@
+ def create_session(conn, user):
+     conn.execute("DELETE FROM sessions WHERE user_id=?", (user["id"],))
+     token = make_token()
++    csrf = make_token()
+     conn.execute(
+-        "INSERT OR REPLACE INTO sessions(token,user_id,username,created_at)"
+-        " VALUES (?,?,?,?)",
+-        (token, user["id"], user["username"], int(time.time())))
++        "INSERT OR REPLACE INTO sessions"
++        "(token,user_id,username,created_at,csrf_token)"
++        " VALUES (?,?,?,?,?)",
++        (token, user["id"], user["username"], int(time.time()), csrf))
+     conn.commit()
+     return token
+ 
+@@ -353,13 +371,34 @@
+         except Exception:
+             return None
+ 
+-    # 第七轮修复#5：CSRF token = HMAC-SHA256(SECRET_KEY, session_token)
++    # Loop2 A3 修复：CSRF token 改为服务端会话内随机值（secrets.token_urlsafe），
++    # 不再由 HMAC(SECRET_KEY, session_token) 派生——即便 SECRET_KEY 泄露，
++    # 也无法由会话 token 离线推导出页面 token。
+     def csrf_token(self):
+         tok = self._session_token()
+         if not tok:
+             return ""
+-        return hmac.new(SECRET_KEY.encode(), tok.encode(),
+-                        hashlib.sha256).hexdigest()
++        conn = get_db()
++        try:
++            row = conn.execute(
++                "SELECT csrf_token FROM sessions WHERE token=?", (tok,)).fetchone()
++        finally:
++            conn.close()
++        if row is None:
++            return ""
++        stored = row["csrf_token"]
++        if stored:
++            return stored
++        # 兜底：老会话行尚无 csrf_token 时补齐（一次性）
++        fresh = make_token()
++        conn = get_db()
++        try:
++            conn.execute("UPDATE sessions SET csrf_token=? WHERE token=?",
++                         (fresh, tok))
++            conn.commit()
++        finally:
++            conn.close()
++        return fresh
+ 
+     def verify_csrf(self, provided):
+         expected = self.csrf_token()
+@@ -382,6 +421,21 @@
+             self.redirect("/?err=login")
+             return None
+         return user
++
++    # Loop2 A2 修复：写端点统一门禁——仅 POST + 必须带有效 CSRF token。
++    # 返回 True 表示放行；False 表示已写出 405/403 响应，调用方直接 return。
++    def check_write(self, user, form):
++        if self.command != "POST":
++            self.html(405, page("405",
++                "<h1>方法不允许</h1><p>该端点仅接受 POST 请求。</p>",
++                user["username"]))
++            return False
++        if not self.verify_csrf(form.get("csrf_token", "")):
++            self.html(403, page("CSRF 校验失败",
++                "<h1>请求被拒绝</h1><p>CSRF token 无效或缺失。</p>",
++                user["username"]))
++            return False
++        return True
+ 
+     # -- 入口 -- #
+     def do_GET(self):
+@@ -504,7 +558,7 @@
+ <li><a href="/upload">文件上传</a>（仅图片/文本/PDF）</li>
+ <li>后台管理（需 admin）：<a href="/admin/users">用户</a> ｜
+ <a href="/admin/orders">订单</a></li>
+-<li>一键复位：<a href="/__reset">/__reset</a></li>
++<li>一键复位：<code>POST /__reset</code>（body: <code>confirm=RESET</code>，仅回环）</li>
+ </ul>"""
+         conn = get_db()
+         try:
+@@ -564,7 +618,16 @@
+         finally:
+             conn.close()
+ 
++    # Loop2 A4 修复：登出必须销毁服务端会话行（旧 Cookie 立即失效）
+     def logout(self):
++        tok = self._session_token()
++        if tok:
++            conn = get_db()
++            try:
++                conn.execute("DELETE FROM sessions WHERE token=?", (tok,))
++                conn.commit()
++            finally:
++                conn.close()
+         self.redirect("/", clear_cookie=True)
+ 
+     def home(self):
+@@ -585,15 +648,19 @@
+ </table>
+ <h3>业务操作</h3>
+ <ul>
+-<li>领券（每券限领一次）：
+-<a href="/coupon/claim?code=WELCOME10">/coupon/claim?code=WELCOME10</a></li>
+-<li>下单（价格由服务端按商品定价，数量 1-100）：
++<li>领券（每券限领一次，需 CSRF token）：
++<form method="post" action="/coupon/claim">
++<input type="hidden" name="csrf_token" value="{csrf}">
++code <input name="code" value="WELCOME10"><button>领取</button></form></li>
++<li>下单（价格由服务端按商品定价，数量 1-100，需 CSRF token）：
+ <form method="post" action="/order/create">
++<input type="hidden" name="csrf_token" value="{csrf}">
+ product_id <input name="product_id" value="1">
+ qty <input name="qty" value="1">
+ <button>下单</button></form></li>
+-<li>提现（原子扣款）：
++<li>提现（原子扣款，需 CSRF token）：
+ <form method="post" action="/wallet/withdraw">
++<input type="hidden" name="csrf_token" value="{csrf}">
+ amount <input name="amount" value="1000"><button>提现</button></form></li>
+ <li>转账（需 CSRF token）：
+ <form method="post" action="/wallet/transfer">
+@@ -604,8 +671,9 @@
+ <form method="post" action="/change-password">
+ <input type="hidden" name="csrf_token" value="{csrf}">
+ new_password <input name="new_password"><button>改密</button></form></li>
+-<li>改订单状态（仅允许 unpaid→paid→shipped）：
+-<form method="get" action="/order/status">
++<li>改订单状态（仅允许 unpaid→paid→shipped，需 CSRF token）：
++<form method="post" action="/order/status">
++<input type="hidden" name="csrf_token" value="{csrf}">
+ order_id <input name="order_id" value="2">
+ state <input name="state" value="paid"><button>更新状态</button></form></li>
+ </ul>"""
+@@ -916,7 +984,7 @@
+             ("Content-Disposition", f'attachment; filename="{safe_name}"')])
+ 
+     # ------------------------------------------------------------------ #
+-    # 第七轮修复#1：下单——服务端查价、校验数量、校验余额
++    # Loop2 A1+A2 修复：下单改为条件更新（原子），并补 CSRF + 方法限制
+     # ------------------------------------------------------------------ #
+     def order_create(self):
+         path, form = self.form()
+@@ -924,6 +992,9 @@
+         try:
+             user = self.require_user(conn)
+             if not user:
++                return
++            # A2：仅 POST + 有效 CSRF token
++            if not self.check_write(user, form):
+                 return
+             product_id = form.get("product_id", "")
+             try:
+@@ -945,23 +1016,31 @@
+                     "<h1>商品不存在</h1>", user["username"]))
+                 return
+             amount = product["price_cents"] * qty
+-            # 余额校验
+-            if user["balance_cents"] < amount:
++            # A1：条件更新（对齐 wallet_withdraw 的 app.py:1076 写法）。
++            # UPDATE 自带 balance_cents >= amount 条件，余额不足时 rowcount=0，
++            # 直接失败返回——不存在"先读余额再扣款"的非原子窗口。
++            cur = conn.execute(
++                "UPDATE users SET balance_cents = balance_cents - ?"
++                " WHERE id=? AND balance_cents >= ?",
++                (amount, user["id"], amount))
++            if cur.rowcount == 0:
++                conn.rollback()
+                 self.html(400, page("余额不足",
+-                    f"<h1>余额不足</h1><p>需要 {amount} 分，当前 {user['balance_cents']} 分。</p>",
++                    f"<h1>余额不足</h1><p>需要 {amount} 分，余额不足，"
++                    f"未创建订单。</p>",
+                     user["username"]))
+                 return
+-            # 扣款 + 建单（同一事务）
+-            conn.execute("UPDATE users SET balance_cents = balance_cents - ? WHERE id=?",
+-                         (amount, user["id"]))
+-            cur = conn.execute(
++            cur2 = conn.execute(
+                 "INSERT INTO orders(user_id,item,qty,amount_cents,state)"
+                 " VALUES (?,?,?,?,?)",
+                 (user["id"], product["name"], qty, amount, "unpaid"))
+             conn.commit()
+-            new_balance = user["balance_cents"] - amount
++            # 改动后重读：余额以库内实际值为准（报数必须改动后重读）
++            new_balance = conn.execute(
++                "SELECT balance_cents FROM users WHERE id=?",
++                (user["id"],)).fetchone()["balance_cents"]
+             self.html(200, page("下单结果",
+-                f"<h1>下单成功</h1><p>订单号 {cur.lastrowid}，商品 {product['name']}，"
++                f"<h1>下单成功</h1><p>订单号 {cur2.lastrowid}，商品 {product['name']}，"
+                 f"数量 {qty}，金额 {amount} 分，当前余额 {new_balance} 分</p>"
+                 '<p><a href="/home">返回钱包</a></p>',
+                 user["username"]))
+@@ -969,7 +1048,7 @@
+             conn.close()
+ 
+     # ------------------------------------------------------------------ #
+-    # 第七轮修复#4：订单状态机——只允许 unpaid→paid→shipped
++    # 第七轮修复#4 + Loop2 A2：订单状态机 + CSRF/方法门禁
+     # ------------------------------------------------------------------ #
+     def order_status(self):
+         path, form = self.form()
+@@ -977,6 +1056,9 @@
+         try:
+             user = self.require_user(conn)
+             if not user:
++                return
++            # A2：仅 POST + 有效 CSRF token
++            if not self.check_write(user, form):
+                 return
+             oid = form.get("order_id", "")
+             new_state = form.get("state", "")
+@@ -1010,7 +1092,7 @@
+             conn.close()
+ 
+     # ------------------------------------------------------------------ #
+-    # 第七轮修复#3：优惠券幂等——同一用户同一券只能领一次
++    # 第七轮修复#3 + Loop2 A2：优惠券幂等 + CSRF/方法门禁
+     # ------------------------------------------------------------------ #
+     def coupon_claim(self):
+         path, q = self.form()
+@@ -1018,6 +1100,9 @@
+         try:
+             user = self.require_user(conn)
+             if not user:
++                return
++            # A2：仅 POST + 有效 CSRF token
++            if not self.check_write(user, q):
+                 return
+             code = q.get("code", "")
+             coupon = conn.execute(
+@@ -1052,7 +1137,7 @@
+             conn.close()
+ 
+     # ------------------------------------------------------------------ #
+-    # 第七轮修复#2：提现原子化——单条 UPDATE 带余额条件，杜绝竞态
++    # 第七轮修复#2 + Loop2 A2：提现原子化 + CSRF/方法门禁
+     # ------------------------------------------------------------------ #
+     def wallet_withdraw(self):
+         path, form = self.form()
+@@ -1060,6 +1145,9 @@
+         try:
+             user = self.require_user(conn)
+             if not user:
++                return
++            # A2：仅 POST + 有效 CSRF token
++            if not self.check_write(user, form):
+                 return
+             try:
+                 amount = int(form.get("amount", "0"))
+@@ -1265,13 +1353,34 @@
+             conn.close()
+ 
+     # ------------------------------------------------------------------ #
+-    # 一键复位
++    # 一键复位（Loop2 A6 加固：仅 POST + 回环 + 二次确认串 + 审计）
+     # ------------------------------------------------------------------ #
+     def reset_endpoint(self):
++        # ① 来源必须回环
+         peer = self.client_address[0]
+         if peer not in ("127.0.0.1", "::1"):
+-            self.html(403, "<h1>403</h1>")
++            self.html(403, "<h1>403</h1><p>仅允许本机回环访问。</p>")
+             return
++        # ② 仅允许 POST（HEAD/GET 一律 405，爬虫与 <img> 不再触发重建）
++        if self.command != "POST":
++            self.html(405, page("405",
++                "<h1>方法不允许</h1><p>复位接口仅接受 POST 请求，"
++                "且需携带 confirm=RESET。</p>"))
++            return
++        # ③ 二次确认参数
++        path, form = self.form()
++        if form.get("confirm", "") != "RESET":
++            self.html(400, page("400",
++                "<h1>缺少二次确认</h1><p>POST 体需包含 confirm=RESET。</p>"))
++            return
++        # ④ 审计日志（不可逆操作必须留痕）
++        try:
++            with open(os.path.join(BASE_DIR, "reset-audit.log"),
++                      "a", encoding="utf-8") as fh:
++                fh.write(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] "
++                         f"RESET peer={peer} ua={self.headers.get('User-Agent', '')}\n")
++        except Exception:
++            pass
+         reset_database()
+         self.html(200, page("reset",
+             "<h1>已重置</h1><p>数据库、上传目录已恢复初始状态。</p>"
+@@ -1306,7 +1415,7 @@
+     server.daemon_threads = True
+     print(f"[+] 靶场已启动: http://{HOST}:{port}")
+     print(f"[+] 数据库: {DB_PATH}")
+-    print("[+] 一键复位: GET /__reset 或 python app.py --reset")
++    print("[+] 一键复位: python app.py --reset 或 POST /__reset (confirm=RESET)")
+     try:
+         server.serve_forever()
+     except KeyboardInterrupt:

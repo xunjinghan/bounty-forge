@@ -1,0 +1,13 @@
+﻿--- A1_get_login_with_attacker_chosen_id: {"status": 200, "token_len": 32, "set_cookie": ["security=impossible", "PHPSESSID=be9a9ae83ddfffd13a7f7a494a0917dd"], "cookie_used": "be9a9ae83ddfffd13a7f7a494a0917dd"}
+--- A2_post_login_same_id: {"status": 302, "loc": "index.php", "set_cookie": ["PHPSESSID=257d636e56babf144165c8848862af6e"], "cookie_after": "257d636e56babf144165c8848862af6e"}
+--- A3_replay_preseeded_id_fresh_client: {"status": 200, "logged_in": false, "title": "Login :: Damn Vulnerable Web Application (DVWA)"}
+--- A4_negative_control_garbage_id: {"status": 302, "loc": "login.php"}
+--- B1_pre_auth_id: {"id": "ccbd6709e0f6428164c7dd00881eb853", "set_cookie": ["security=impossible", "PHPSESSID=09199f3d7227071ff9db35cdcbd9a6c5", "PHPSESSID=ccbd6709e0f6428164c7dd00881eb853"]}
+--- B2_post_auth_id: {"id": "60936fefa0beb7583ce6f9668846605f", "regenerated": true, "set_cookie": ["PHPSESSID=60936fefa0beb7583ce6f9668846605f"]}
+--- B3_index_with_new_id: {"status": 200, "logged_in": true}
+--- B4_old_prelogin_id_after_login: {"status": 302, "loc": "login.php"}
+--- C_weak_id_sequence: {"samples": ["dvwaSession=8b2df50f3bbde43fc286be5474ea609bc4516c8d", "dvwaSession=95e427530738f851f309c805c3508bec7fb1cb4b", "dvwaSession=8a7af11f36939baa5e7d45e83e6e40aa0b70d9f0", "dvwaSession=4bd4f61b1be77327d353e8e1825b2eb594671542", "dvwaSession=2131b7da010c04f27fdf39c4bf901b301dba730c", "dvwaSession=5ea9fbfc2faeb30e1018b10da1df0576d17fdf6e", "dvwaSession=f39c1853fd84e9114363e9e64ebad4b0aba6c625"], "count": 7}
+--- D_set_cookie_headers: {"/dvwa/login.php": "security=impossible; path=/; HttpOnly, PHPSESSID=59d1a0f5e32ee2c560e1506ffe7bfa23; expires=Tue, 13 Oct 2026 13:59:44 GMT; Max-Age=86400; path=/; HttpOnly; SameSite=Strict, PHPSESSID=094a4d3eade57ec0ad00e9686ed300bc; expires=Tue, 13 Oct 2026 13:59:44 GMT; Max-Age=86400; path=/; HttpOnly; SameSite=Strict", "/dvwa/index.php": "", "/bWAPP/login.php": "PHPSESSID=0ac8766245c93ee72c068253d59b8d17; path=/, PHPSESSID=44549feb612b7fc25908409a9d049666; path=/, security_level=0; expires=Tue, 12 Oct 2027 13:59:46 GMT; Max-Age=31536000; path=/", "/bWAPP/portal.php": "PHPSESSID=59bb0c160d26fe5cb9ab052842a486c1; path=/"}
+{"rc": "ok", "steps": 10}
+{"rc": 0, "stdout_len": 2199, "stderr_len": 0}
+

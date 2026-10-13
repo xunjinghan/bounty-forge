@@ -1,0 +1,11 @@
+﻿COOKIE_LEN=1772 RAW_B64DECODED=1328
+IV_HEX=116a2f296318a5654b5beed985f6fbac
+CT_LEN=1312
+KEY_LEN=16 KEY_HEX=90f1fe6c8c64e43d9d799888c5c69a68
+DECRYPT_OK len=1308 magic=aced0005
+PT_HEAD="\xAC\xED\x00\x05sr\x00\x11java.util.HashSet\xBAD\x85\x95\x96\xB8\xB74\x03\x00\x00xpw\f"
+KEY_MATCH(b64)=kPH+bIxk5D2deZiIxcaaaA== -> decrypted magic ok, len=1308
+MATCHING_KEYS=["kPH+bIxk5D2deZiIxcaaaA=="]
+CANDIDATE_COUNT=20
+{"rc": 0, "stdout_len": 406, "stderr_len": 0}
+

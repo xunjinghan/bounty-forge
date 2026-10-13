@@ -1,0 +1,52 @@
+﻿=========== FINAL STATE VERIFICATION (verifier-ind t10) ===========
+2026-10-12 10:34:51 EDT
+--- docroot: teaching endpoint must be GONE ---
+total 40
+drwxr-xr-x  4 root     root      4096 Oct 12 10:24 .
+drwxr-xr-x  3 root     root      4096 Jun 16 10:26 ..
+drwxr-xr-x 12 root     root     12288 Oct 11 00:01 bWAPP
+drwxr-xr-x 12 www-data www-data  4096 Oct  8 19:29 dvwa
+-rw-r--r--  1 root     root     10703 Jun 16 10:30 index.html
+-rw-r--r--  1 root     root       896 Jun 16 10:28 index.nginx-debian.html
+--- teaching endpoint HTTP check ---
+verifind-teach=404
+--- no leftover tmp probes ---
+-rw-rw-r-- 1 kali kali  4812 Oct 12 10:25 /tmp/verif-b1b3.json
+-rw-rw-r-- 1 kali kali  9129 Oct 12 10:24 /tmp/verif-b1b3.py
+-rw-rw-r-- 1 kali kali  9995 Oct 12 10:26 /tmp/verif-b1-depth.json
+-rw-rw-r-- 1 kali kali  4264 Oct 12 10:25 /tmp/verif-b1-depth.py
+-rw-rw-r-- 1 kali kali     0 Oct 12 10:22 /tmp/verif-b2-err.txt
+-rw-rw-r-- 1 kali kali  3292 Oct 12 10:23 /tmp/verif-b2-medctl.py
+-rw-rw-r-- 1 kali kali 10800 Oct 12 10:22 /tmp/verif-b2-out.json
+-rw-rw-r-- 1 kali kali  8603 Oct 12 10:22 /tmp/verif-b2.py
+-rw-rw-r-- 1 kali kali  4752 Oct 12 10:24 /tmp/verif-b2-root.json
+-rw-rw-r-- 1 kali kali  7185 Oct 12 10:24 /tmp/verif-b2-root.py
+-rw-rw-r-- 1 kali kali  1373 Oct 12 10:34 /tmp/verif-b3browser.json
+-rw-rw-r-- 1 kali kali  4844 Oct 12 10:33 /tmp/verif-b3browser.py
+-rw-rw-r-- 1 kali kali  6115 Oct 12 10:29 /tmp/verif-b4b.json
+-rw-rw-r-- 1 kali kali  5607 Oct 12 10:28 /tmp/verif-b4b.py
+-rw-rw-r-- 1 kali kali  5301 Oct 12 10:30 /tmp/verif-b4c.json
+-rw-rw-r-- 1 kali kali  6114 Oct 12 10:29 /tmp/verif-b4c.py
+-rw-rw-r-- 1 kali kali  3613 Oct 12 10:27 /tmp/verif-b4.json
+-rw-rw-r-- 1 kali kali  5662 Oct 12 10:26 /tmp/verif-b4.py
+-rw-rw-r-- 1 kali kali  4307 Oct 12 10:32 /tmp/verif-b5csp.json
+-rw-rw-r-- 1 kali kali  2535 Oct 12 10:32 /tmp/verif-b5csp.py
+--- sink 8099 must be closed ---
+no listener on 8098/8099 (sink closed)
+--- DB terminal state ---
+bWAPP.users	A.I.M.	A.I.M. or Authentication Is Missing
+bWAPP.users	bee	Any bugs?
+dvwa.guestbook_count	3
+dvwa.guestbook_rows	1	test
+dvwa.guestbook_rows	2	<script>XSS_S_MARK_66</script>
+dvwa.guestbook_rows	3	<script>XSS_S_MARK_66</script>
+dvwa.users_hash_unchanged	1	admin	5f4dcc3b5aa765d61d8327deb882cf99
+dvwa.users_hash_unchanged	2	gordonb	e99a18c428cb38d5f260853678922e03
+dvwa.users_hash_unchanged	3	1337	8d3533d75ae2c3966d7e0d4fcc69216b
+dvwa.users_hash_unchanged	4	pablo	0d107d09f5bbe40cade3de5c71e9e9b7
+dvwa.users_hash_unchanged	5	smithy	5f4dcc3b5aa765d61d8327deb882cf99
+--- services ---
+active
+active
+--- vbox vm state (host side separate) ---
+{"rc": 0, "stdout_len": 2603, "stderr_len": 0}

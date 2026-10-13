@@ -1,0 +1,6 @@
+9405A117308A0235F55B1FDBD306CB63B26DB6848E9268CB36DBDD84BD87DF26  loop3-vulhub-baseline-20261012-230400.json
+size=25331 bytes
+at=2026-10-12T23:03:21+08:00
+prev_sha256=F2130B8D762AEA084CADC53FBBBC76A2BF2637512247A17E9240E3CBBB86B0A4 (v1, superseded)
+rev1=RISK_001 FIXED (tomcat compose hostIP added, captain-approved)
+rev2=RISK_002 RETRACTED (docker data actually on D: not C: - captain-corrected, independently reverified)

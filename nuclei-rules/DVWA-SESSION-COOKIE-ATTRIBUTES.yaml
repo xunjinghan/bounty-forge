@@ -1,0 +1,67 @@
+id: DVWA-SESSION-COOKIE-ATTRIBUTES
+
+info:
+  name: DVWA Session Cookie Missing HttpOnly / SameSite / Secure
+  author: forge-detector
+  severity: medium
+  description: |
+    检测 DVWA 的会话 cookie 属性缺陷：`PHPSESSID` 缺 HttpOnly / Secure / SameSite，
+    配合 XSS 可直接读取会话凭据。
+
+    这是 B5（存储型 XSS → 会话劫持）成立**前提条件**的一半：loop3 §6.2 实测
+    `document.cookie` 在浏览器里可见（httpOnly:false），这是能读走会话的前提。
+    本模板只读检查 cookie 属性，**不做任何写入**。
+
+    ⚠️ 这是 B 档的**配置缺陷**，不是可独立利用的漏洞。命中 ≠ 危害，
+    必须搭配 XSS 或会话劫持链才有意义。
+
+  remediation: |
+    php.ini 设置 `session.cookie_httponly=1`、`session.cookie_secure=1`、
+    `session.cookie_samesite="Strict"`、`session.use_strict_mode=1`。
+  reference:
+    - security/learning/loop3-b-dvwa-bwapp-report-t4-20261012.md
+    - security/learning/_evidence/verified-loop3-b-b5-storedxss-20261012-2236.json
+  classification:
+    cwe-id: CWE-1004, CWE-614, CWE-1275
+  metadata:
+    bounty-forge: loop4-t2
+    loop3-finding-id: B5-XSS-01-prerequisite
+    destructive: "false"
+    http-methods: GET
+    request-count: "1"
+    max-request-rate: "1/s"
+    note: "本模板是 B5 的前提条件检查，不是独立漏洞；XSS 侧见 B5 笔记"
+    loop3-evidence: "loop3 2026-10-12 实测：DVWA login.php 下发 `Set-Cookie: PHPSESSID=...; expires=...; Max-Age=86400; path=/; HttpOnly; SameSite=Strict`（带 HttpOnly/SameSite=Strict）；bWAPP csrf_3.php 实测下发 `PHPSESSID=...; path=/`（三个属性全无）。两者不同，勿混为一谈。"
+
+http:
+  # PHPSESSID 存在（loop3 实测 DVWA/bWAPP 均下发 PHPSESSID）
+  - method: GET
+    path:
+      - "{{BaseURL}}/login.php"
+    headers:
+      User-Agent: bounty-forge-detector/1.0 (read-only, local lab)
+    redirects: false
+    matchers-condition: and
+    matchers:
+      - type: regex
+        part: header
+        regex:
+          - "(?i)set-cookie:[^\\r\\n]*PHPSESSID="
+      - type: status
+        status:
+          - 200
+          - 302
+
+  # 带 HttpOnly 的对照（loop3 实测 DVWA 的 PHPSESSID **带** HttpOnly 但不带 Secure/SameSite；
+  # bWAPP 的 PHPSESSID 则三个都没有 —— 两条记录都保留，见 metadata）
+  - method: GET
+    path:
+      - "{{BaseURL}}/index.php"
+    headers:
+      User-Agent: bounty-forge-detector/1.0 (read-only, local lab)
+    redirects: false
+    matchers:
+      - type: regex
+        part: header
+        regex:
+          - "(?i)set-cookie:[^\\r\\n]*PHPSESSID=[^\\r\\n]*httponly"

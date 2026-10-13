@@ -1,0 +1,39 @@
+﻿=== users rows (login, secret) ===
+A.I.M.	A.I.M. or Authentication Is Missing
+bee	x
+=== users columns ===
+id	int(10)	NO	PRI	NULL	auto_increment
+login	varchar(100)	YES		NULL	
+password	varchar(100)	YES		NULL	
+email	varchar(100)	YES		NULL	
+secret	varchar(100)	YES		NULL	
+activation_code	varchar(100)	YES		NULL	
+activated	tinyint(1)	YES		0	
+reset_code	varchar(100)	YES		NULL	
+admin	tinyint(1)	YES		0	
+=== seed in install sql ===
+=== install.php secret refs ===
+60:        $sql.= "email varchar(100) DEFAULT NULL,secret varchar(100) DEFAULT NULL,activation_code varchar(100) DEFAULT NULL,activated tinyint(1) DEFAULT '0',";
+
+73:        $sql = "INSERT INTO users (login, password, email, secret, activation_code, activated, reset_code, admin) VALUES";
+
+148:        $sql = "CREATE TABLE IF NOT EXISTS heroes (id int(10) NOT NULL AUTO_INCREMENT,login varchar(100) DEFAULT NULL,password varchar(100) DEFAULT NULL,secret varchar(100) DEFAULT NULL,";
+
+161:        $sql = "INSERT INTO heroes (login, password, secret) VALUES";
+
+=== admin/ secrets ===
+/var/www/html/bWAPP/insecure_direct_object_ref_3.php:78:    <p>Reset your secret to <input type="button" OnClick="ResetSecret();" value="Any bugs?"></p>
+/var/www/html/bWAPP/insecure_direct_object_ref_3.php:97:            xmlHttp.send("<reset><login><?php if(isset($_SESSION["login"])){echo $_SESSION["login"];}?></login><secret>Any bugs?</secret></reset>");
+/var/www/html/bWAPP/install.php:75:        $sql.= "('bee', '6885858486f31043e5839c735d99457f045affd0', 'bwapp-bee@mailinator.com', 'Any bugs?', NULL, 1, NULL, 1)";
+
+/var/www/html/bWAPP/reset.php:154:        $sql.= "('bee', '6885858486f31043e5839c735d99457f045affd0', 'bwapp-bee@mailinator.com', 'Any bugs?', NULL, 1, NULL, 1)";
+
+/var/www/html/bWAPP/sqli_8-1.php:78:    <p>Reset your secret to <input type="button" OnClick="ResetSecret();" value="Any bugs?"></p>
+/var/www/html/bWAPP/sqli_8-1.php:97:            xmlHttp.send("<reset><login><?php if(isset($_SESSION["login"])){echo $_SESSION["login"];}?></login><secret>Any bugs?</secret></reset>");
+/var/www/html/bWAPP/update.php:146:$sql.= "('bee', '6885858486f31043e5839c735d99457f045affd0', 'bwapp-bee@mailinator.com', 'Any bugs?', NULL, 1, NULL, 1)";
+
+/var/www/html/bWAPP/xxe-1.php:78:    <p>Reset your secret to <input type="button" OnClick="ResetSecret();" value="Any bugs?"></p>
+/var/www/html/bWAPP/xxe-1.php:97:            xmlHttp.send("<reset><login><?php if(isset($_SESSION["login"])){echo $_SESSION["login"];}?></login><secret>Any bugs?</secret></reset>");
+=== DONE ===
+{"rc": 0, "stdout_len": 2526, "stderr_len": 0}
+

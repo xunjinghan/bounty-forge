@@ -1,0 +1,72 @@
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+*.bak
+*.backup
+
+# 敏感文件（绝不提交）
+*.key
+*.pem
+*.p12
+*.pfx
+.env
+.env.*
+config.json
+credentials.json
+*secret*
+*password*
+*token*
+*credential*
+
+# 数据库
+*.db
+*.sqlite
+*.sqlite3
+
+# 大文件（超过 50MB 的不提交）
+*.zip
+*.tar.gz
+*.tar
+*.7z
+*.rar
+*.iso
+
+# 虚拟机镜像
+*.vdi
+*.vmdk
+*.vhd
+*.vhdx
+
+# Docker
+docker-compose.override.yml
+
+# 证据中的敏感内容（如需提交请脱敏后再提交）
+evidence/**/*.json
+evidence/**/*.jsonl
+evidence/**/db/

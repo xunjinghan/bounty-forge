@@ -1,0 +1,422 @@
+﻿=== dvwaPage.inc.php lines 20-120 ===
+// Valid security levels
+$security_levels = array('low', 'medium', 'high', 'impossible');
+if( !isset( $_COOKIE[ 'security' ] ) || !in_array( $_COOKIE[ 'security' ], $security_levels ) ) {
+	// Set security cookie to impossible if no cookie exists
+	if( in_array( $_DVWA[ 'default_security_level' ], $security_levels) ) {
+		dvwaSecurityLevelSet( $_DVWA[ 'default_security_level' ] );
+	} else {
+		dvwaSecurityLevelSet( 'impossible' );
+	}
+	// If the cookie wasn't set then the session flags need updating.
+	dvwa_start_session();
+}
+
+/*
+ * This function is called after login and when you change the security level.
+ * It gets the security level and sets the httponly and samesite cookie flags
+ * appropriately.
+ *
+ * To force an update of the cookie flags we need to update the session id,
+ * just setting the flags and doing a session_start() does not change anything.
+ * For this, session_id() or session_regenerate_id() can be used.
+ * Both keep the existing session values, so nothing is lost,
+ * it will just cause a new Set-Cookie header to be sent with the new right
+ * flags and the new id (or the same one if we wish to keep it).
+*/
+function dvwa_start_session() {
+	// This will setup the session cookie based on
+	// the security level.
+
+	$security_level = dvwaSecurityLevelGet();
+	if ($security_level == 'impossible') {
+		$httponly = true;
+		$samesite = "Strict";
+	}
+	else {
+		$httponly = false;
+		$samesite = "";
+	}
+
+	$maxlifetime = 86400;
+	$secure = false;
+	$domain = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST);
+
+	/*
+	 * Need to do this as you can't update the settings of a session
+	 * while it is open. So check if one is open, close it if needed
+	 * then update the values and start it again.
+	*/
+	if (session_status() == PHP_SESSION_ACTIVE) {
+		session_write_close();
+	}
+
+	session_set_cookie_params([
+		'lifetime' => $maxlifetime,
+		'path' => '/',
+		'domain' => $domain,
+		'secure' => $secure,
+		'httponly' => $httponly,
+		'samesite' => $samesite
+	]);
+
+	/*
+	 * We need to force a new Set-Cookie header with the updated flags by updating
+	 * the session id, either regenerating it or setting it to a value, because
+	 * session_start() might not generate a Set-Cookie header if a cookie already
+	 * exists.
+	 *
+	 * For impossible security level, we regenerate the session id, PHP will
+	 * generate a new random id. This is good security practice because it
+	 * prevents the reuse of a previous unauthenticated id that an attacker
+	 * might have knowledge of (aka session fixation attack).
+   *
+	 * For lower levels, we want to allow session fixation attacks, so if an id
+	 * already exists, we don't want it to change after authentication. We thus
+	 * set the id to its previous value using session_id(), which will force
+	 * the Set-Cookie header.
+	*/
+	if ($security_level == 'impossible') {
+		session_start();
+		session_regenerate_id(); // force a new id to be generated
+	}
+	else {
+		if (isset($_COOKIE[session_name()])) // if a session id already exists
+			session_id($_COOKIE[session_name()]); // we keep the same id
+		session_start(); // otherwise a new one will be generated here
+	}
+}
+
+if (array_key_exists ("Login", $_POST) && $_POST['Login'] == "Login") {
+	dvwa_start_session();
+} else {
+	if (!session_id()) {
+		session_start();
+	}
+}
+
+if (!array_key_exists ("default_locale", $_DVWA)) {
+	$_DVWA[ 'default_locale' ] = "en";
+}
+
+dvwaLocaleSet( $_DVWA[ 'default_locale' ] );
+=== DVWA login.php (session 段) ===
+<?php
+
+
+
+define( 'DVWA_WEB_PAGE_TO_ROOT', '' );
+
+require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
+
+
+
+dvwaPageStartup( array( ) );
+
+
+
+dvwaDatabaseConnect();
+
+
+
+if( isset( $_POST[ 'Login' ] ) ) {
+
+	// Anti-CSRF
+
+	if (array_key_exists ("session_token", $_SESSION)) {
+
+		$session_token = $_SESSION[ 'session_token' ];
+
+	} else {
+
+		$session_token = "";
+
+	}
+
+
+
+	checkToken( $_REQUEST[ 'user_token' ], $session_token, 'login.php' );
+
+
+
+	$user = $_POST[ 'username' ];
+
+	$user = stripslashes( $user );
+
+	$user = ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $user ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+
+
+	$pass = $_POST[ 'password' ];
+
+	$pass = stripslashes( $pass );
+
+	$pass = ((isset($GLOBALS["___mysqli_ston"]) && is_object($GLOBALS["___mysqli_ston"])) ? mysqli_real_escape_string($GLOBALS["___mysqli_ston"],  $pass ) : ((trigger_error("[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.", E_USER_ERROR)) ? "" : ""));
+
+	$pass = md5( $pass );
+
+
+
+	// Validate that username and password are not empty (improved login validation).
+
+	if( trim( $user ) === '' || trim( $_POST[ 'password' ] ) === '' ) {
+
+		dvwaMessagePush( 'Username and password cannot be empty. Login failed.' );
+
+		dvwaRedirect( 'login.php' );
+
+		exit;
+
+	}
+
+
+
+	$query = ("SELECT table_schema, table_name, create_time
+
+				FROM information_schema.tables
+
+				WHERE table_schema='{$_DVWA['db_database']}' AND table_name='users'
+
+				LIMIT 1");
+
+	$result = @mysqli_query($GLOBALS["___mysqli_ston"],  $query );
+
+	if( mysqli_num_rows( $result ) != 1 ) {
+
+		dvwaMessagePush( "First time using DVWA.<br />Need to run 'setup.php'." );
+
+		dvwaRedirect( DVWA_WEB_PAGE_TO_ROOT . 'setup.php' );
+
+	}
+
+
+
+	$query  = "SELECT * FROM `users` WHERE user='$user' AND password='$pass';";
+
+	$result = @mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '<pre>' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '.<br />Try <a href="setup.php">installing again</a>.</pre>' );
+
+	if( $result && mysqli_num_rows( $result ) == 1 ) {    // Login Successful...
+
+		dvwaMessagePush( "You have logged in as '{$user}'" );
+
+		dvwaLogin( $user );
+
+		dvwaRedirect( DVWA_WEB_PAGE_TO_ROOT . 'index.php' );
+
+	}
+
+
+
+	// Login failed
+
+	dvwaMessagePush( 'Login failed' );
+
+	dvwaRedirect( 'login.php' );
+
+}
+
+
+
+$messagesHtml = messagesPopAllToHtml();
+
+
+
+Header( 'Cache-Control: no-cache, must-revalidate');    // HTTP/1.1
+
+Header( 'Content-Type: text/html;charset=utf-8' );      // TODO- proper XHTML headers...
+
+Header( 'Expires: Tue, 23 Jun 2009 12:00:00 GMT' );     // Date in the past
+
+
+
+// Anti-CSRF
+
+generateSessionToken();
+
+
+
+echo "<!DOCTYPE html>
+
+
+
+<html lang=\"en-GB\">
+
+
+
+	<head>
+
+
+
+		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />
+
+
+
+		<title>Login :: Damn Vulnerable Web Application (DVWA)</title>
+
+
+
+		<link rel=\"stylesheet\" type=\"text/css\" href=\"" . DVWA_WEB_PAGE_TO_ROOT . "dvwa/css/login.css\" />
+
+
+
+	</head>
+
+=== weak_id source low/medium/high/impossible ===
+--- low.php ---
+<?php
+
+
+
+$html = "";
+
+
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+	if (!isset ($_SESSION['last_session_id'])) {
+
+		$_SESSION['last_session_id'] = 0;
+
+	}
+
+	$_SESSION['last_session_id']++;
+
+	$cookie_value = $_SESSION['last_session_id'];
+
+	setcookie("dvwaSession", $cookie_value);
+
+}
+
+?>
+
+--- medium.php ---
+<?php
+
+
+
+$html = "";
+
+
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+	$cookie_value = time();
+
+	setcookie("dvwaSession", $cookie_value);
+
+}
+
+?>
+
+--- high.php ---
+<?php
+
+
+
+$html = "";
+
+
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+	if (!isset ($_SESSION['last_session_id_high'])) {
+
+		$_SESSION['last_session_id_high'] = 0;
+
+	}
+
+	$_SESSION['last_session_id_high']++;
+
+	$cookie_value = md5($_SESSION['last_session_id_high']);
+
+	setcookie("dvwaSession", $cookie_value, time()+3600, "/vulnerabilities/weak_id/", $_SERVER['HTTP_HOST'], false, false);
+
+}
+
+
+
+?>
+
+--- impossible.php ---
+<?php
+
+
+
+$html = "";
+
+
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+	$cookie_value = bin2hex(random_bytes(20));
+
+	setcookie("dvwaSession", $cookie_value, time()+3600, "/vulnerabilities/weak_id/", $_SERVER['HTTP_HOST'], true, true);
+
+}
+
+?>
+
+=== security level get/set ===
+25:		dvwaSecurityLevelSet( $_DVWA[ 'default_security_level' ] );
+26-	} else {
+27:		dvwaSecurityLevelSet( 'impossible' );
+28-	}
+29-	// If the cookie wasn't set then the session flags need updating.
+30-	dvwa_start_session();
+31-}
+32-
+33-/*
+34- * This function is called after login and when you change the security level.
+35- * It gets the security level and sets the httponly and samesite cookie flags
+36- * appropriately.
+37- *
+38- * To force an update of the cookie flags we need to update the session id,
+39- * just setting the flags and doing a session_start() does not change anything.
+--
+49:	$security_level = dvwaSecurityLevelGet();
+50-	if ($security_level == 'impossible') {
+51-		$httponly = true;
+52-		$samesite = "Strict";
+53-	}
+54-	else {
+55-		$httponly = false;
+56-		$samesite = "";
+57-	}
+58-
+59-	$maxlifetime = 86400;
+60-	$secure = false;
+61-	$domain = parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST);
+--
+200:function dvwaSecurityLevelGet() {
+201-	global $_DVWA;
+202-
+203-	// If there is a security cookie, that takes priority.
+204-	if (isset($_COOKIE['security'])) {
+205-		return $_COOKIE[ 'security' ];
+206-	}
+207-
+208-	// If not, check to see if authentication is disabled, if it is, use
+209-	// the default security level.
+210-	if (array_key_exists("disable_authentication", $_DVWA) && $_DVWA['disable_authentication']) {
+211-		return $_DVWA[ 'default_security_level' ];
+212-	}
+--
+218:function dvwaSecurityLevelSet( $pSecurityLevel ) {
+219-	if( $pSecurityLevel == 'impossible' ) {
+220-		$httponly = true;
+221-	}
+222-	else {
+223-		$httponly = false;
+224-	}
+225-
+226-	setcookie( 'security', $pSecurityLevel, 0, "/", "", false, $httponly );
+227-	$_COOKIE['security'] = $pSecurityLevel;
+228-}
+229-
+230-function dvwaLocaleGet() {
+--
+346:	switch( dvwaSecurityLevelGet() ) {
+347-		case 'low':
+=== DONE ===
+{"rc": 0, "stdout_len": 9731, "stderr_len": 0}
+

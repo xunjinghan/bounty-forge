@@ -1,0 +1,61 @@
+﻿=== shiro container network ===
+container=
+--- default gw ---
+--- resolv/ hosts ---
+=== reachability from container ===
+172.17.0.1 http= rc=127
+host.docker.internal http= rc=127
+192.168.56.101 http= rc=127
+10.0.2.2 http= rc=127
+=== docker networks ===
+=== ysoserial chain availability (msf json) ===
+top-level keys: ['none', 'bash', 'cmd', 'powershell']
+total chains: 33
+  AspectJWeaver unsupported
+  BeanShell1 dynamic
+  C3P0 unsupported
+  Click1 dynamic
+  Clojure dynamic
+  CommonsBeanutils1 dynamic
+  CommonsCollections1 dynamic
+  CommonsCollections2 dynamic
+  CommonsCollections3 dynamic
+  CommonsCollections4 dynamic
+  CommonsCollections5 dynamic
+  CommonsCollections6 dynamic
+  CommonsCollections7 dynamic
+  FileUpload1 unsupported
+  Groovy1 dynamic
+  Hibernate1 dynamic
+  Hibernate2 unsupported
+  JBossInterceptors1 dynamic
+  JSON1 dynamic
+  JavassistWeld1 dynamic
+  Jdk7u21 dynamic
+  Jython1 unsupported
+  MozillaRhino1 dynamic
+  MozillaRhino2 dynamic
+  Myfaces1 dynamic
+  Myfaces2 unsupported
+  ROME dynamic
+  Spring1 dynamic
+  Spring2 dynamic
+  URLDNS unsupported
+  Vaadin1 dynamic
+  Wicket1 unsupported
+  frohoff/ysoserial#168 dynamic
+=== DONE ===
+{"rc": 0, "stdout_len": 1159, "stderr_len": 243}
+python.exe : bash: line 4: docker: command not found
+所在位置 行:1 字符: 248
++ ... xe'; $out = & $py dsh-tools\kali-run.py --stdin-script security\learn ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (bash: line 4: docker: command not found:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+bash: line 6: docker: command not found
+bash: line 8: docker: command not found
+bash: line 10: docker: command not found
+bash: line 18: docker: command not found
+bash: line 19: docker: command not found
+

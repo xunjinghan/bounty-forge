@@ -1,0 +1,92 @@
+﻿### loop3 t7 C2 收尾：start -> 确认 JSP -> 删除 -> 验 404 -> stop
+### recorded_at=2026-10-12T23:15:29.3880904+08:00
+
+--- [1] docker start vulhub-tomcat-18082 ---
+vulhub-tomcat-18082
+
+--- [2] http check after start ---
+GET / -> HTTP 200
+
+--- [3] JSP still present? (ls in container) ---
+-rw-r----- 1 root root 12279 Jul 24  2017 index.jsp
+-rw-r----- 1 root root   703 Oct 12 15:07 t7poc230751.jsp
+-rw-r----- 1 root root   703 Oct 12 15:08 t7rce230826.jsp
+-rw-r----- 1 root root   703 Oct 12 15:08 t7rep230839.jsp
+
+--- [4] PUT'd JSP content sha256 (pre-delete) ---
+75d4b2f2aa10a40d07ce3c7a3c98fbb6b7cdcc1fe9860f7bb64e86096eb0e8bf  /usr/local/tomcat/webapps/ROOT/t7rce230826.jsp
+75d4b2f2aa10a40d07ce3c7a3c98fbb6b7cdcc1fe9860f7bb64e86096eb0e8bf  /usr/local/tomcat/webapps/ROOT/t7rep230839.jsp
+75d4b2f2aa10a40d07ce3c7a3c98fbb6b7cdcc1fe9860f7bb64e86096eb0e8bf  /usr/local/tomcat/webapps/ROOT/t7poc230751.jsp
+
+--- [5] GET each before delete ---
+GET /t7poc230751.jsp -> HTTP 200
+GET /t7rce230826.jsp -> HTTP 200
+GET /t7rep230839.jsp -> HTTP 200
+
+--- [6] local JSP sha256 (source of truth) ---
+75d4b2f2aa10a40d07ce3c7a3c98fbb6b7cdcc1fe9860f7bb64e86096eb0e8bf  t7-c2-readonly.jsp
+
+--- [7] DELETE via HTTP (proof DELETE also enabled) ---
+DELETE /t7poc230751.jsp -> HTTP 405
+DELETE /t7rce230826.jsp -> HTTP 405
+DELETE /t7rep230839.jsp -> HTTP 405
+
+--- [8] container ls after HTTP DELETE ---
+-rw-r----- 1 root root 12279 Jul 24  2017 index.jsp
+-rw-r----- 1 root root   703 Oct 12 15:07 t7poc230751.jsp
+-rw-r----- 1 root root   703 Oct 12 15:08 t7rce230826.jsp
+-rw-r----- 1 root root   703 Oct 12 15:08 t7rep230839.jsp
+
+--- [9] GET each after delete (expect 404) ---
+GET /t7poc230751.jsp -> HTTP 200
+GET /t7rce230826.jsp -> HTTP 200
+GET /t7rep230839.jsp -> HTTP 200
+
+--- [10] verify command output no longer reachable ---
+LOOP3T7C2READONLY=uid=0(root) gid=0(root) groups=0(root)|root|bb18b6fe2e26|/usr/local/tomcat|bb18b6fe2e26
+(empty above = command output no longer served)
+
+--- [11] NOTE: HTTP DELETE = 405 (JspServlet handles .jsp, DELETE not supported there).
+         DELETE is NOT the cleanup path; DefaultServlet readonly=false only governs PUT.
+
+--- [12] operational cleanup: remove the 3 uploaded JSPs inside container ---
+rm-rc=True
+
+--- [13] container ls after cleanup ---
+-rw-r----- 1 root root 12279 Jul 24  2017 index.jsp
+
+--- [14] GET each after cleanup (expect 404) ---
+GET /t7poc230751.jsp -> HTTP 404
+GET /t7rce230826.jsp -> HTTP 404
+GET /t7rep230839.jsp -> HTTP 404
+
+--- [15] confirm command output unreachable (expect empty) ---
+(confirmed: no LOOP3T7C2READONLY output, RCE path closed)
+
+--- [16] docker stop vulhub-tomcat-18082 (per captain: keep only one JVM running) ---
+vulhub-tomcat-18082
+
+--- [17] final container states ---
+bb18b6fe2e26 | vulhub-tomcat-18082 | Exited (143) 1 second ago
+3d7917aecbac | vulhub-shiro-18081 | Up 25 minutes
+4ded65d92db3 | pentagi | Exited (0) 2 hours ago
+c72f923d360a | pgexporter | Exited (2) 2 hours ago
+14f268879e1d | scraper | Exited (137) 2 hours ago
+2262f98461b7 | pgvector | Exited (0) 2 hours ago
+
+--- [18] port 18082 released ---
+TCP    127.0.0.1:58153        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58155        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58156        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58157        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58159        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58160        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58161        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58162        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58163        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58164        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58165        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58171        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58172        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58173        127.0.0.1:18082        TIME_WAIT       0
+  TCP    127.0.0.1:58174        127.0.0.1:18082        TIME_WAIT       0

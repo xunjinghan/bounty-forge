@@ -1,0 +1,61 @@
+﻿=== sessions now ===
+sess_036dd2f56fcc1ec3e5538e1643d3f510
+sess_loop3t4recordingid0000000000001
+=== remove remaining loop3 test sessions ===
+CLEAN: no loop3 test sessions left
+=== port 8099 ===
+8099 closed
+=== 8099 process ===
+no probe processes
+=== teaching dir ===
+lo3-teach removed
+=== final bwapp/dvwa state ===
+bWAPP.users	1	A.I.M.	A.I.M. or Authentication Is Missing
+bWAPP.users	2	bee	Any bugs?
+dvwa.users	1	admin	
+dvwa.users	2	gordonb	
+dvwa.users	3	1337	
+dvwa.users	4	pablo	
+dvwa.users	5	smithy	
+guestbook	1	test	
+guestbook	2	<script>XSS_S_MARK_66</script>	
+guestbook	3	<script>XSS_S_MARK_66</script>	
+=== blog rows ===
+0
+=== evidence files on kali ===
+-rw-rw-r-- 1 kali kali  1427 Oct 12 10:02 /tmp/loop3-t4-b5-sink.jsonl
+-rw-rw-r-- 1 kali kali 95256 Oct 12 10:02 /tmp/loop3-t4-b5-xss.png
+-rw-rw-r-- 1 kali kali  1764 Oct 12 10:06 /tmp/loop3-t4-probe10.json
+-rw-rw-r-- 1 kali kali  4727 Oct 12 10:07 /tmp/loop3-t4-probe11.json
+-rw-rw-r-- 1 kali kali   158 Oct 12 10:07 /tmp/loop3-t4-probe11-sink.jsonl
+-rw-rw-r-- 1 kali kali  3134 Oct 12 10:08 /tmp/loop3-t4-probe12.json
+-rw-rw-r-- 1 kali kali  3689 Oct 12 09:56 /tmp/loop3-t4-probe1.json
+-rw-rw-r-- 1 kali kali  2136 Oct 12 09:57 /tmp/loop3-t4-probe2.json
+-rw-rw-r-- 1 kali kali   494 Oct 12 09:58 /tmp/loop3-t4-probe3.json
+-rw-rw-r-- 1 kali kali  2552 Oct 12 09:59 /tmp/loop3-t4-probe4.json
+-rw-rw-r-- 1 kali kali  1911 Oct 12 10:01 /tmp/loop3-t4-probe5.json
+-rw-rw-r-- 1 kali kali  2677 Oct 12 10:02 /tmp/loop3-t4-probe6.json
+-rw-rw-r-- 1 kali kali  1399 Oct 12 10:03 /tmp/loop3-t4-probe7.json
+-rw-rw-r-- 1 kali kali  5821 Oct 12 10:04 /tmp/loop3-t4-probe8.json
+-rw-rw-r-- 1 kali kali  3718 Oct 12 10:05 /tmp/loop3-t4-probe9.json
+-rw-rw-r-- 1 kali kali  2450 Oct 12 10:05 /tmp/loop3-t4-probe9-sink.jsonl
+=== sha256 ===
+10508d7fd0da7a9ec43ffe6cb5a70fdf4cbf2ebf3daf2cfbf8a26b84b03fdb5e  /tmp/loop3-t4-probe1.json
+ec21d03d66b844e4d8cee1032d56d5b3b240e1bf7206c7128095c7b85c738707  /tmp/loop3-t4-probe2.json
+3169954fd78e60c6468696f8bbcb4660b27a89d83b396c16d46c99b50ecd554d  /tmp/loop3-t4-probe3.json
+62dd2a4e63f24d6b2cc0606e451e77165a4cbe08b2a3093461ff0eba71cbdebe  /tmp/loop3-t4-probe4.json
+24eac0810fc4f9dd833f6e3779a069badb071377d6bc3e65fd213b6d9b3648cd  /tmp/loop3-t4-probe5.json
+99b532fa648baf2ec466d901d526c22f45401f5e7cdc85d4fe18fd9390ac83f9  /tmp/loop3-t4-probe6.json
+7a92dcc673326d16ac7d3a021cabc9e309af393d0e2d15a7522afae27b0d8c52  /tmp/loop3-t4-probe7.json
+faeebbaad38701cd97c9c0f2867fff8279b791a186015e80b268da7cff387fbc  /tmp/loop3-t4-probe8.json
+9bc4e52fef99c42a3a3a4779d99cb7d1dae488b86db0c5d08f10131459758ac3  /tmp/loop3-t4-probe9.json
+2d2a7cf8f6616702969843d376b7c9f8c3ce0f872a4b96b714ab3434e8b882a6  /tmp/loop3-t4-probe10.json
+108924d1bc00972b39b6a09ddb4b7e31ab16998231b1706fc2902998a107afe6  /tmp/loop3-t4-probe11.json
+edd5d3f50418c39f53ac8acd3684138684d4107124395a19ac280762c5da6a77  /tmp/loop3-t4-probe12.json
+77f9c42b14294625764b83ff37aa65a7014a0b270494950a8f96cc8498838071  /tmp/loop3-t4-b5-sink.jsonl
+e79192488491278d08d06bb724a8631f3f0c164286eceba2c4edb3971548b18e  /tmp/loop3-t4-probe9-sink.jsonl
+12fdb00bf5f802cade9643f040a16d01b68665a753dfaf6230481b8d47e5b3ad  /tmp/loop3-t4-probe11-sink.jsonl
+ddfb4c791fca03362477e85da8fa966453e01d873b67d5978a91341bb280283c  /tmp/loop3-t4-b5-xss.png
+=== DONE ===
+{"rc": 0, "stdout_len": 3282, "stderr_len": 0}
+

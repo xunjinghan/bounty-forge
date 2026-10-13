@@ -1,0 +1,11 @@
+﻿=== ruby ===
+/usr/bin/ruby
+ruby 3.3.8 (2025-04-09 revision b200bad6cd) [x86_64-linux-gnu]
+=== msf ruby lib load test ===
+MSF_LIB_FAIL LoadError: cannot load such file -- rex/text
+=== msfconsole available ===
+/usr/bin/msfconsole
+Framework Version: 6.4.135-dev
+=== DONE ===
+{"rc": 0, "stdout_len": 272, "stderr_len": 0}
+

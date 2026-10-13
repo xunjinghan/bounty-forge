@@ -1,0 +1,1 @@
+http://127.0.0.1:8095/api/search?q=k (GET)  # C:\Users\Administrator\Documents\deepseek-harness\default-workspace\dsh-tools\tools\sqlmap\sqlmap.py -u http://127.0.0.1:8095/api/search?q=k -p q --batch --level=2 --risk=1 --threads=4 --output-dir=sqmap-8095-apisearch

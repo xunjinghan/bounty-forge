@@ -1,0 +1,14 @@
+﻿--- secret_current: {"v": "x"}
+--- login: {"status": 302, "phpsessid": "42c380c4976e7633f9340504197d95d1", "seclev": "0"}
+--- restore: {"resp": "bee's secret has been reset!"}
+--- secret_after_restore: {"v": "Any bugs?"}
+--- all_rows: {"v": "1\tA.I.M.\tA.I.M. or Authentication Is Missing\t1\n2\tbee\tAny bugs?\t1"}
+--- grep_LIBXML_NOENT: {"v": "/var/www/html/bWAPP/sqli_8-2.php:75:    // libxml_disable_entity_loader(true);\n/var/www/html/bWAPP/xxe-2.php:78:    // libxml_disable_entity_loader(true);"}
+--- grep_xml_parsers: {"v": "/var/www/html/bWAPP/sqli_8-2.php\n/var/www/html/bWAPP/xmli_1.php\n/var/www/html/bWAPP/xmli_2.php\n/var/www/html/bWAPP/xxe-2.php\n/var/www/html/bWAPP/soap/class.soap_parser.php\n/var/www/html/bWAPP/soap/class.wsdl.php\n/var/www/html/bWAPP/soap/class.xmlschema.php\n/var/www/html/bWAPP/soap/nusoap.php"}
+--- php_default_entity_check: {"v": "a=[]"}
+--- php_noent_entity_check: {"v": "PHP Fatal error:  Uncaught TypeError: simplexml_load_string(): Argument #2 ($class_name) must be a class name derived from SimpleXMLElement or null, 2 given in Command line code:1\nStack trace:\n#0 Command line code(1): simplexml_load_string()\n#1 {main}\n  thrown in Command line code on line 1"}
+--- dvwa_guestbook_schema: {"v": "comment_id\tsmallint(5) unsigned\tNO\tPRI\tNULL\tauto_increment\ncomment\tvarchar(300)\tYES\t\tNULL\t\nname\tvarchar(100)\tYES\t\tNULL"}
+--- dvwa_guestbook_rows: {"v": "1\ttest\n2\t<script>XSS_S_MARK_66</script>\n3\t<script>XSS_S_MARK_66</script>"}
+{"rc": "ok"}
+{"rc": 0, "stdout_len": 1508, "stderr_len": 0}
+

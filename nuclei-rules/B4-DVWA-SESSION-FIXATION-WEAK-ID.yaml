@@ -1,0 +1,70 @@
+id: B4-DVWA-SESSION-FIXATION-WEAK-ID
+
+info:
+  name: DVWA Session Fixation / Weak Session ID
+  author: forge-detector
+  severity: high
+  description: |
+    检测 DVWA low/medium/high 档的会话固定与弱会话 ID。
+
+    原理：DVWA 的 dvwa_start_session() 在 low/medium/high 档走
+    `if (isset($_COOKIE[session_name()])) session_id($_COOKIE[session_name()]);`
+    —— 源码注释直言 "we want to allow session fixation attacks"。
+    只有 impossible 档才 session_regenerate_id()。
+
+    档位 cookie 陷阱：DVWA 的档位 cookie 叫 `security`，**不叫 `security_level`**
+    （那是 bWAPP 的命名）。投 security_level=low 会被判成 impossible → 触发会话再生成
+    → 现象是「会话被再生成」而不是「会话固定」，必假阴性。loop3 连续两轮假阴性同一根因。
+  remediation: |
+    登录成功后必须 session_regenerate_id(true) 并删除旧 session 文件；
+    会话 ID 用 random_bytes 强随机生成，不用计数器/时间戳/自增。
+  reference:
+    - security/learning/loop3-b-dvwa-bwapp-report-t4-20261012.md
+    - security/learning/_evidence/verified-loop3-b-b4-session-20261012-2236.json
+  classification:
+    cwe-id: CWE-384, CWE-330
+  metadata:
+    bounty-forge: loop4-t2
+    loop3-finding-id: B4-SESSION-01
+    destructive: "false"
+    http-methods: GET
+    request-count: "2"
+    max-request-rate: "1/s"
+    requires-auth: "false"
+    security-cookie-name: "security"
+    security-cookie-trap: "security_level 是 bWAPP 的命名；DVWA 读的是 security。投错 = 假阴性"
+    loop3-evidence: "low 档自选 SID 登录后原样保留、陌生客户端复用 3/3；impossible 档 preserved=false 1/1；low 档 weak_id 1..7 完美自增 7/7"
+    caveat: "本模板无登录动作，只能观察「服务端是否做了会话再生成」。完整的固定→复用链见 D:\\bounty-forge\\poc\\bf_b4_dvwa_session_fixation.py"
+
+http:
+  # 判据：投一个服务端不可能预先创建过的自造会话 ID
+  # 若响应含已登录标记且未把它替换成随机值 → 疑似未做会话再生成
+  - method: GET
+    path:
+      - "{{BaseURL}}/index.php"
+    headers:
+      User-Agent: bounty-forge-detector/1.0 (read-only, local lab)
+      Cookie: "PHPSESSID=bf-nuclei-fixed-probe-0001; security=low"
+    redirects: false
+    matchers-condition: and
+    matchers:
+      - type: status
+        status:
+          - 200
+      - type: word
+        part: body
+        words:
+          - "logout.php"
+
+  # 判据：weak_id 关位是否存在（会话 ID 生成方式可预测的前提）
+  - method: GET
+    path:
+      - "{{BaseURL}}/vulnerabilities/weak_id/"
+    headers:
+      User-Agent: bounty-forge-detector/1.0 (read-only, local lab)
+      Cookie: "security=low"
+    redirects: false
+    matchers:
+      - type: status
+        status:
+          - 200

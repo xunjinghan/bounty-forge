@@ -1,0 +1,87 @@
+id: C1-SHIRO-FINGERPRINT
+
+info:
+  name: Apache Shiro rememberMe Fingerprint (non-destructive)
+  author: forge-detector
+  severity: info
+  description: |
+    **只读**识别 Apache Shiro。绝不生成、绝不投递反序列化 payload。
+
+    ★★★ 本模板的判据边界（loop3 血泪，必须先读）★★★
+    Set-Cookie: rememberMe=deleteMe **不是** Shiro 漏洞的判据。
+    loop3 实测矩阵（证据 loop3-t7-c1-matrix-20261012.json + loop3-t7-c1-discriminate-20261012.json）：
+      - 不带 rememberMe cookie         -> 无 Set-Cookie（deleteMe 不出现）
+      - rememberMe= (空值)             -> false
+      - 4 字符垃圾                      -> true
+      - 4000 字符垃圾                   -> true
+      - 默认密钥加密的合法序列化流       -> true
+      - 错误密钥加密的同一流            -> true
+      - /login anon 路径               -> true
+    -> 只要 cookie 非空一律回 deleteMe，零区分度。把 deleteMe 当判据 = 100% 假阳性。
+    本模板**完全不使用** deleteMe 作为 matcher，只用「rememberMe cookie 是否存在」
+    + 「Shiro 风格登录页」作为指纹，命中即标「疑似，需人工确认」。
+
+    可利用性确认（默认密钥 / gadget 链）必须投递加密序列化流 —— 那是破坏性操作，
+    **不在本模板内，也不在团队红线内**。本模板只到「疑似 Shiro」为止。
+  remediation: |
+    1) 升级 Shiro >= 1.4.2；2) 显式配置随机 rememberMe 密钥（KMS 注入，不入代码库）；
+    3) 不需要 rememberMe 时 securityManager.setRememberMeManager(null)；
+    4) 启用序列化类白名单；5) 清理 classpath 上非必要 gadget 依赖。
+  reference:
+    - security/learning/loop3-c-vulhub-report-t7-20261012.md
+    - security/learning/_evidence/loop3-t7-c1-shiro-20261012.json
+    - security/learning/_evidence/loop3-t7-c1-matrix-20261012.json
+  classification:
+    cve-id: CVE-2016-4437
+    cwe-id: CWE-502, CWE-798
+  metadata:
+    bounty-forge: loop4-t2
+    loop3-finding-id: C1-SHIRO-2016-4437
+    destructive: "false"
+    http-methods: GET
+    request-count: "2"
+    max-request-rate: "1/s"
+    severity-note: "info 而非 critical：只做指纹识别，不做可利用性确认"
+    deleteMe-禁用说明: "deleteMe 无区分度（loop3 N-C03 实测 5 类密文全部 true），绝不作 matcher"
+    oracle-must-be: "OOB 外带 + 容器 /proc 进程快照（loop3 决定性判据），不是 deleteMe、不是响应耗时"
+    loop3-evidence: "5 类构造密文 deleteMe 全部 true（零区分度）；默认密钥 kPH+bIxk5D2deZiIxcaaaA== 在 vulhub/shiro:1.2.4 上可解密；gadget 链 3/4 OOB 命中，CC2 因 classpath 无 collections4 未命中"
+
+http:
+  # 只读指纹 1：根路径是否回 rememberMe cookie（只看 cookie 是否存在，不看取值）
+  - method: GET
+    path:
+      - "{{BaseURL}}/"
+    headers:
+      User-Agent: bounty-forge-detector/1.0 (read-only, local lab)
+    redirects: false
+    matchers-condition: or
+    matchers:
+      - type: regex
+        part: header
+        regex:
+          - "(?i)set-cookie:[^\\r\\n]*rememberme="
+      - type: regex
+        part: header
+        regex:
+          - "(?i)location:[^\\r\\n]*login"
+
+  # 只读指纹 2：/login 是否为 Shiro 风格页面
+  - method: GET
+    path:
+      - "{{BaseURL}}/login"
+    headers:
+      User-Agent: bounty-forge-detector/1.0 (read-only, local lab)
+    redirects: false
+    matchers-condition: or
+    matchers:
+      - type: word
+        part: body
+        condition: or
+        words:
+          - "rememberMe"
+          - "remember me"
+          - "org.apache.shiro"
+      - type: regex
+        part: body
+        regex:
+          - "(?i)shiro"
