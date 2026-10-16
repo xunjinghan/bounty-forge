@@ -32,6 +32,26 @@ jobs:
           sys.exit(1 if bad else 0)
           PY
 
+  encoding-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 所有文本文件必须是合法 UTF-8
+        run: |
+          python3 - <<'PY'
+          import pathlib, sys
+          exts = {'.md', '.py', '.json', '.txt', '.yml', '.yaml', '.js', '.mjs', '.cmd', '.sh', '.toml'}
+          bad = []
+          for p in pathlib.Path('.').rglob('*'):
+              if not p.is_file() or '.git' in p.parts or p.suffix.lower() not in exts:
+                  continue
+              try:
+                  p.read_bytes().decode('utf-8')
+              except UnicodeDecodeError:
+                  bad.append(str(p))
+          print('非 UTF-8 文件:', bad if bad else '无')
+          sys.exit(1 if bad else 0)
+          PY
   secret-scan:
     runs-on: ubuntu-latest
     steps:
