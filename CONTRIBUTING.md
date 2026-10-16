@@ -4,9 +4,9 @@
 
 ## 开发环境
 
-- Python 3.10+
-- 推荐使用虚拟环境：`python -m venv .venv && .venv\Scripts\activate`
-- 安装依赖：`pip install -r requirements.txt`
+- Python 3.10+（`poc/` 里的脚本用了 `X | Y` 类型标注与 `list[str]`，3.9 及以下会报错）
+- **不需要装任何依赖**：脚本只用 Python 标准库（`argparse` / `urllib` / `ipaddress` / `hashlib` / `re`），仓库里也没有 `requirements.txt`
+- 想隔离环境可以自己建：`python -m venv .venv && .venv\Scripts\activate`
 
 ## 提交规范
 
@@ -48,7 +48,15 @@ docs(readme): 更新安装说明
 1. **仅用于授权测试**：所有代码必须在授权范围内使用
 2. **不包含破坏性 payload**：PoC 代码必须是非破坏性的
 3. **隐私保护**：不提交包含真实 IP、域名、凭据的测试数据
-4. **护栏优先**：新增功能必须集成 guard.py 的目标校验
+4. **护栏优先**：新增脚本必须自带目标白名单（只允许 `127.0.0.1` / `localhost` / `192.168.56.x`），直接复用 `poc/bfnet.py` 的 `assert_allowed()`，别自己另写一套
+5. **只读优先**：检测阶段只发 GET/HEAD；确需 POST 的必须在说明里写清为什么，并保证可回滚
+
+## 想一起维护这个仓库？（申请项目合作人）
+
+如果你不只是想提个 PR，而是想一起长期维护，可以提交 [合作者申请](https://github.com/xunwmw/bounty-forge/issues/new?template=collaborator_request.md)。
+我会在 **Settings → Collaborators** 里把你加进来，之后你有写权限（可建分支、提 PR、管 Issue）。
+
+申请时顺手写清楚：你想做哪块（模板 / 方法论 / CVE 复现 / 报告规范）、大概能投入多少时间。不想申请也完全可以——直接提 Issue 或 PR 一样欢迎。
 
 ## 提交流程
 
@@ -65,6 +73,7 @@ docs(readme): 更新安装说明
 - 复现步骤
 - 期望行为 vs 实际行为
 - 错误日志或截图
+- 你的网络环境（国内直连 / 开了代理），以及是否已按 [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) 排查
 
 ## 许可证
 

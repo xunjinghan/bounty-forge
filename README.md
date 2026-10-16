@@ -6,14 +6,14 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![报告](https://img.shields.io/badge/实战报告-43%2B-blue)
-![PoC](https://img.shields.io/badge/检测脚本-PoC%206%2B-purple)
-![Nuclei](https://img.shields.io/badge/Nuclei模板-6-red)
+![PoC](https://img.shields.io/badge/检测脚本-4-purple)
+![Nuclei](https://img.shields.io/badge/Nuclei模板-5-red)
 ![CVE](https://img.shields.io/badge/CVE序列-64项-green)
 ![CI](https://github.com/xunwmw/bounty-forge/actions/workflows/ci.yml/badge.svg)
 
 AI 多 Agent 协作驱动的漏洞挖掘知识库——从侦察、检测、验证到报告，覆盖赏金猎手全流程。所有检测规则与结论均基于本地靶场实战验证，非破坏性检测优先。
 
-本项目的目标是：**在成年后能够独立完成漏洞盒子等平台的 Web 众测赏金项目。**
+本项目的目标是：**把 Web 众测赏金的完整流程（侦察 → 检测 → 验证 → 报告）练熟，先在本机靶场上做到可复现、可归档。**
 
 ---
 
@@ -23,8 +23,8 @@ AI 多 Agent 协作驱动的漏洞挖掘知识库——从侦察、检测、验�
 
 - 多角色分工：侦察员、挖掘员、验证员、笔记员、靶场管理员、学习引导员
 - 交叉验证：每个漏洞由独立验证员复现，排除误报
-- 扁平编制：受限于 DSH subagent 深度锁死，采用队长+成员扁平结构
-- 额度优先：以免费额度优先，必要时切换可用车道（不追求零成本，追求可复现）
+- 扁平编制：受子任务嵌套深度限制，不搞多层指挥，队长直接对接成员
+- 车道切换：优先走免费额度车道，额度耗尽再切备用车道（不追求零成本，追求可复现）
 
 ### 🔬 实战验证
 
@@ -50,7 +50,7 @@ AI 多 Agent 协作驱动的漏洞挖掘知识库——从侦察、检测、验�
 ### 💡 原创方法论
 
 - 7 问验证门：一个答错就杀掉，不写报告
-- 永不提交黑名单：30+ 种 consistently N/A 的漏洞类型
+- 永不提交黑名单：30+ 种「稳定判为 N/A」的漏洞类型
 - 漏洞链方法论：A→B→C 集群狩猎，单漏洞给钱少，链给 3-10 倍
 - 顶级黑客思维框架：皇冠珠宝思维、开发者共情、信任边界映射
 - 判据可靠性速查表：哪些信号可信，哪些是假 oracle
@@ -64,12 +64,21 @@ bounty-forge/
 ├── README.md                          # 本文件：项目介绍与快速索引
 ├── LICENSE                            # MIT 许可证
 ├── .gitignore                         # Git 忽略规则
+├── CHANGELOG.md                       # 版本变更记录
+├── CONTRIBUTING.md                    # 贡献指南（含合作者申请方式）
+├── SECURITY.md                        # 漏洞报告与安全边界
 ├── INDEX.md                           # 详细归档索引（所有证据文件清单）
 ├── EVIDENCE_METHODOLOGY_MAP.md        # ⭐ 证据链↔方法论对应关系（每条漏洞关联哪条教训）
 │
+├── .github/                           # CI（相对链接体检 + 凭据扫描）与 Issue 模板
+├── docs/                              # 导航与发布说明
+│   ├── NAVIGATION.md                  # 长索引的入口页
+│   ├── PUBLISHING.md                  # 公开/私有内容边界清单
+│   └── ENVIRONMENT.md                 # 环境、依赖安装链接、国内网络实测
+│
 ├── cve-lib/                           # CVE 知识库
-│   ├── CVE靶场清单.md                  # 155 个 Vulhub 漏洞环境清单
-│   └── loop4-执行顺序.md              # 155 个环境的执行优先级排序
+│   ├── CVE靶场清单.md                  # 实读 182 个 Vulhub 环境，命中入库 64 条
+│   └── loop4-执行顺序.md              # 64 条 CVE 序列（P0=2 / P1=26 / P2=36）的执行优先级
 │
 ├── playbook/                          # 方法论与避坑手册
 │   ├── 挖洞避坑手册.md                  # 13 条原创教训 + 判据可靠性速查表
@@ -78,21 +87,21 @@ bounty-forge/
 │   ├── 顶级黑客思维框架.md               # ⭐ 心智模型
 │   └── 工具清单与OSINT资源.md            # ⭐ 工具与搜索引擎
 │
-├── detection/                          # 检测工具（非破坏性）
-│   ├── nuclei-rules/                  # Nuclei 模板（5+ 个）
-│   │   ├── B1-DVWA-LFI-PATH-TRAVERSAL.yaml
-│   │   ├── B4-DVWA-SESSION-FIXATION-WEAK-ID.yaml
-│   │   ├── C1-SHIRO-FINGERPRINT.yaml
-│   │   ├── C2-TOMCAT-2017-12615-PUT-CONFIRM.yaml
-│   │   ├── DVWA-SESSION-COOKIE-ATTRIBUTES.yaml
-│   │   └── _ASSET-INDEX.md
-│   └── poc/                           # Python 非破坏性检测脚本
-│       ├── bfnet.py                   # 网络工具库（只接 GET/HEAD）
-│       ├── bf_b1_dvwa_lfi.py         # DVWA LFI 检测
-│       ├── bf_b4_dvwa_session_fixation.py  # DVWA 会话固定检测
-│       ├── bf_c1_shiro_fingerprint.py      # Shiro 指纹检测
-│       ├── bf_c2_tomcat_put_readonly.py    # Tomcat PUT 只读确认
-│       └── README.md
+├── nuclei-rules/                      # Nuclei 模板（5 个 + 1 份资产索引）
+│   ├── B1-DVWA-LFI-PATH-TRAVERSAL.yaml
+│   ├── B4-DVWA-SESSION-FIXATION-WEAK-ID.yaml
+│   ├── C1-SHIRO-FINGERPRINT.yaml
+│   ├── C2-TOMCAT-2017-12615-PUT-CONFIRM.yaml
+│   ├── DVWA-SESSION-COOKIE-ATTRIBUTES.yaml
+│   └── _ASSET-INDEX.md
+│
+├── poc/                               # Python 非破坏性检测脚本（4 个脚本 + 1 个网络库）
+│   ├── bfnet.py                       # 网络工具库（物理上只接 GET/HEAD，传 PUT 直接抛错）
+│   ├── bf_b1_dvwa_lfi.py              # DVWA LFI 检测
+│   ├── bf_b4_dvwa_session_fixation.py # DVWA 会话固定检测
+│   ├── bf_c1_shiro_fingerprint.py     # Shiro 指纹检测
+│   ├── bf_c2_tomcat_put_readonly.py   # Tomcat PUT 只读确认
+│   └── README.md
 │
 ├── reports/                           # 报告模板与实战报告
 │   ├── submit/                        # 提交版模板
@@ -116,9 +125,7 @@ bounty-forge/
 │   ├── T5/                            # t5 团队挖掘证据
 │   ├── META/                          # 元数据与统计
 │   └── UNSORTED/                      # 待整理证据
-│
-├── fingerprints/                      # 指纹库
-└── roadmap/                           # 路线图与能力矩阵（规划中）
+└── （共 483 个文件：证据 213 / 报告 43 / 模板 18 / 其余为文档与脚本）
 ```
 
 ---
@@ -145,11 +152,13 @@ bounty-forge/
 
 ### 二、CVE 知识库（cve-lib/）
 
-- **155 个 Vulhub 漏洞环境清单**：覆盖 Shiro、Tomcat、Struts2、Fastjson、Log4j、Weblogic、ThinkPHP、WordPress 等
-- **执行优先级排序**：按赏金高频度和利用价值排序
-- **已复现 CVE**：
+- **64 条 CVE 靶场清单**：逐个实读 182 个 Vulhub 环境目录（compose / Dockerfile / README），命中入库 64 条，覆盖 Shiro、Tomcat、Struts2、Fastjson、Log4j、Weblogic、ThinkPHP、WordPress 等
+- **执行优先级排序**：按赏金高频度与利用价值排序（P0=2 / P1=26 / P2=36），并附「只绑回环、只读验证」等执行铁律
+- **已复现 CVE**（完整报告在 `reports/c-档/`）：
   - CVE-2016-4437：Shiro rememberMe 反序列化 RCE（默认密钥，3 条 gadget 链）
   - CVE-2017-12615：Tomcat PUT 上传 RCE
+  - 复现过程与判据复盘：c-档 3 份报告（C1 判据复盘 / T7 复现 / 三段式对照）+ `evidence/C/` 下 72 个取证脚本与日志
+  - 其余 CVE 按 `cve-lib/loop4-执行顺序.md` 的 64 条序列排期推进（本仓库只发布已验证的部分，未验证的不会写进来）
 
 ### 三、检测工具（detection/）
 
@@ -163,9 +172,10 @@ bounty-forge/
 | B4-DVWA-SESSION-FIXATION-WEAK-ID | DVWA 弱会话 ID | 漏洞检测 |
 | DVWA-SESSION-COOKIE-ATTRIBUTES | DVWA Cookie 属性检查 | 配置检测 |
 
-#### Python 检测脚本（5 个）
+#### Python 检测脚本（4 个脚本 + 1 个网络库）
 
 所有脚本只做 GET/HEAD 探测，不执行利用。bfnet.py 网络库物理上只接 GET/HEAD，传 PUT 直接抛 ValueError。
+脚本自带目标白名单（只允许 `127.0.0.1` / `localhost` / `192.168.56.x`），传公网地址会直接退出。
 
 | 脚本 | 检测目标 |
 |---|---|
@@ -181,7 +191,7 @@ bounty-forge/
 - **提交前自查清单**：提交前逐项检查
 - **示例-参考报告-C1-Shiro**：Shiro RCE 完整实战报告范文
 
-### 五、实战报告（25+ 份）
+### 五、实战报告（43 份，含模板与总账）
 
 #### A 档：target-site-lab 加固版验证
 
@@ -233,9 +243,12 @@ Java Runtime.exec() 是异步的，sleep 命令的执行时间不会反映在 HT
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/yourname/bounty-forge.git
+git clone https://github.com/xunwmw/bounty-forge.git
 cd bounty-forge
 ```
+
+> 国内直连 `github.com` 可能握手超时（2026-10-16 实测），`codeload.github.com` 的「Download ZIP」也常不通。
+> 绕法（含 **WARP 官方下载路径**）见 [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)。
 
 ### 2. 阅读方法论
 
@@ -251,12 +264,14 @@ cd bounty-forge
 
 ```bash
 # Nuclei 模板
-nuclei -u http://target -t detection/nuclei-rules/
+nuclei -u http://127.0.0.1:8080 -t nuclei-rules/
 
 # Python 检测脚本
-cd detection/poc
-python bf_c1_shiro_fingerprint.py -u http://target:8080
+cd poc
+python bf_c1_shiro_fingerprint.py -u http://127.0.0.1:8080
 ```
+
+> 上面两处目标都写成 `127.0.0.1` 不是偷懒：脚本与模板都按「只打本机靶场」设计，换成公网地址会被 `bfnet` 的白名单直接拒绝。
 
 ### 4. 使用报告模板
 
@@ -266,25 +281,28 @@ python bf_c1_shiro_fingerprint.py -u http://target:8080
 
 ## 技术栈与环境
 
+**最快路径**：本仓库主体是 Markdown 知识库 + 几个纯标准库 Python 脚本，**不装任何依赖也能读、能跑**。
+详细的系统版本要求、各工具官方安装链接、中国大陆网络实测与 WARP 使用说明，都在这份文档里 → [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)
+
 ### 硬件
 
 - CPU：E3-1271 v3
-- 内存：16GB DDR3（建议升级到 32GB）
-- GPU：GTX 650（不需要，用云端 API）
+- 内存：16 GB DDR3（跑多容器靶场时建议升到 32 GB）
+- GPU：GTX 650（跑 AI 用不上，判定走 API）
 
 ### 软件
 
 - DSH（DeepSeek Harness）：AI 多 Agent 协作平台
-- 免费模型：Space Bunny、DeepSeek V4.1 Flash、GLM 5.3 Flash 等
+- 车道与模型：优先用免费额度车道（DeepSeek V4.1 Flash、GLM 5.3 Flash 等），额度耗尽再切备用车道
 - Kali Linux（VirtualBox VM）：渗透测试环境
 - Docker：Vulhub 漏洞环境
 - 工具链：nmap、nuclei、httpx、katana、ffuf、sqlmap 等 18+ 工具
 
 ### 靶场
 
-- target-site-lab（8095/8091）：自研 PHP 靶场
-- DVWA / bWAPP（Kali VM）：经典 Web 漏洞靶场
-- Vulhub（Docker）：155 个 CVE 环境
+- target-site-lab（8095 / 8091）：自研靶场，Python 标准库，只绑 `127.0.0.1`
+- DVWA / bWAPP：经典 Web 漏洞靶场（Docker 或 Kali VM 均可）
+- Vulhub（Docker）：64 条入库 CVE 环境，按序列逐个复现
 
 ---
 
@@ -309,7 +327,7 @@ python bf_c1_shiro_fingerprint.py -u http://target:8080
 ### D5-D6：赏金实战（规划中）
 
 - ⏳ 内网域渗透（需升级内存到 32GB）
-- ⏳ 漏洞盒子真实项目测试（成年后）
+- ⏳ 漏洞盒子真实项目测试（先把授权靶场与自建环境的流程跑顺）
 - ⏳ 自动化挖掘流水线
 
 ---
@@ -319,10 +337,12 @@ python bf_c1_shiro_fingerprint.py -u http://target:8080
 欢迎贡献！最有价值的贡献：
 
 1. **新的检测模板或检测技术**
-2. **Payload 补充**（到 detection/nuclei-rules/）
+2. **Payload 补充**（到 nuclei-rules/）
 3. **方法论改进**（有实战报告支撑的）
 4. **新的 CVE 复现报告**（带完整证据）
 5. **平台支持**（补天、CNVD 等报告模板）
+
+想直接一起维护这个仓库（而不只是提 PR），可以走 [合作者申请](https://github.com/xunwmw/bounty-forge/issues/new?template=collaborator_request.md)，见文末「反馈 · 合作」。
 
 ### 贡献流程
 
@@ -362,9 +382,10 @@ git push origin feature/your-contribution
 
 ## 从这里开始
 
-- 想快速了解：本 README 下面就是
+- 想快速了解：往下读本 README 的「项目亮点」与「核心内容」
 - 想按主题跳转：[docs/NAVIGATION.md](docs/NAVIGATION.md)（130KB 索引的入口页）
 - 想贡献或发布：[docs/PUBLISHING.md](docs/PUBLISHING.md)（公开/私有边界清单）
+- 想先跑起来：[docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)（系统要求 / 安装链接 / 国内网络与 WARP）
 
 
 ---
@@ -385,3 +406,20 @@ flowchart LR
 ```
 
 > 项目里所有结论都走这条链：**没有独立复现的结论不算 confirmed**，误报与阴性同样留档。
+
+---
+
+## 反馈 · 合作
+
+> 如果你在使用时发现了任何问题，可以给我发消息或者私信我。不过最好不要私信，本人社恐。欢迎大佬给我的项目提意见。
+> 如果你使用时发生了错误或者没法使用，也可以修改我的项目。申请项目合作人。
+
+| 你想做的事 | 点哪里 |
+| --- | --- |
+| 跑不起来 / 有报错 | [提 Bug 报告](https://github.com/xunwmw/bounty-forge/issues/new?template=bug_report.md) |
+| 想要新内容 / 提意见 | [提功能建议](https://github.com/xunwmw/bounty-forge/issues/new?template=feature_request.md) |
+| **想一起做这个项目（申请项目合作人）** | [提交合作者申请](https://github.com/xunwmw/bounty-forge/issues/new?template=collaborator_request.md) |
+| 已经改好了 | 直接发 Pull Request（约定见 [CONTRIBUTING.md](CONTRIBUTING.md)） |
+
+「申请项目合作人」就是 GitHub 的仓库协作者（Collaborator）：你提申请，我会在 **Settings → Collaborators** 里把你加进来，
+通过后你有这个仓库的写权限（能建分支、提 PR、管 Issue），比一直 fork 省事。
