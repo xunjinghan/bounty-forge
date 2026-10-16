@@ -1,13 +1,15 @@
 # Bounty Forge — AI 驱动的漏洞挖掘知识库与实战工具集
 
+**EN** — A knowledge base + toolkit for AI multi-agent vulnerability research: methodology, lab-verified evidence, PoC scripts, nuclei templates and report templates. Local labs only.
+
 > **免责声明**：本项目所有内容仅供安全学习与授权测试使用，禁止用于任何非法用途。使用前请确保已获得目标的明确书面授权。所有实战记录均基于本地靶场、虚拟机和容器环境，未对任何真实公网目标进行未授权测试。
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![CVE 覆盖](https://img.shields.io/badge/CVE-4+-green)
-![漏洞类型](https://img.shields.io/badge/漏洞类型-15+-orange)
-![实战报告](https://img.shields.io/badge/实战报告-25+-blue)
-![检测脚本](https://img.shields.io/badge/检测脚本-5+-purple)
-![Nuclei 模板](https://img.shields.io/badge/Nuclei模板-5+-red)
+![报告](https://img.shields.io/badge/实战报告-43%2B-blue)
+![PoC](https://img.shields.io/badge/检测脚本-PoC%206%2B-purple)
+![Nuclei](https://img.shields.io/badge/Nuclei模板-6-red)
+![CVE](https://img.shields.io/badge/CVE序列-64项-green)
+![CI](https://github.com/xunwmw/bounty-forge/actions/workflows/ci.yml/badge.svg)
 
 AI 多 Agent 协作驱动的漏洞挖掘知识库——从侦察、检测、验证到报告，覆盖赏金猎手全流程。所有检测规则与结论均基于本地靶场实战验证，非破坏性检测优先。
 
@@ -22,7 +24,7 @@ AI 多 Agent 协作驱动的漏洞挖掘知识库——从侦察、检测、验�
 - 多角色分工：侦察员、挖掘员、验证员、笔记员、靶场管理员、学习引导员
 - 交叉验证：每个漏洞由独立验证员复现，排除误报
 - 扁平编制：受限于 DSH subagent 深度锁死，采用队长+成员扁平结构
-- 全免费模型：所有 Agent 均使用免费 API 模型，零成本运行
+- 额度优先：以免费额度优先，必要时切换可用车道（不追求零成本，追求可复现）
 
 ### 🔬 实战验证
 
@@ -364,3 +366,22 @@ git push origin feature/your-contribution
 - 想按主题跳转：[docs/NAVIGATION.md](docs/NAVIGATION.md)（130KB 索引的入口页）
 - 想贡献或发布：[docs/PUBLISHING.md](docs/PUBLISHING.md)（公开/私有边界清单）
 
+
+---
+
+## 工作流（证据链）
+
+```mermaid
+flowchart LR
+  R[侦察 recon] --> H[挖掘 hunter]
+  H --> V{独立验证 verifier}
+  V -->|confirmed| E[证据链<br/>请求/响应/截图/sha256]
+  V -->|needs_revision| H
+  V -->|false positive| F[误报清单]
+  E --> P[白帽报告]
+  P --> D[蓝军补丁 defender]
+  D --> B[绕过复测 hunter]
+  F -. 阴性知识库 .-> K[(知识库)]
+```
+
+> 项目里所有结论都走这条链：**没有独立复现的结论不算 confirmed**，误报与阴性同样留档。
