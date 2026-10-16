@@ -365,7 +365,7 @@ git push origin feature/your-contribution
 - [Threekiii/Awesome-Redteam](https://github.com/Threekiii/Awesome-Redteam) — 中文攻防知识库
 - [xiaoy-sec/Pentest_Note](https://github.com/xiaoy-sec/Pentest_Note) — 渗透测试笔记
 - [OWASP/wstg](https://github.com/OWASP/wstg) — Web 安全测试指南
-- [Vulhub](https://github.com/vulhub/vulhub) — 155 个漏洞环境
+- [Vulhub](https://github.com/vulhub/vulhub) — 上游漏洞环境仓库（本仓库逐个实读 182 个环境目录，命中入库 64 条）
 - [ProjectDiscovery](https://github.com/projectdiscovery) — nuclei/httpx/katana/subfinder 等工具
 
 ---
