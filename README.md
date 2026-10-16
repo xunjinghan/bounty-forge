@@ -1,4 +1,4 @@
-# Bounty Forge — AI 驱动的漏洞挖掘知识库与实战工具集
+# 🧙 领域展开 · 漏洞修仙宇宙 — Bounty Forge：AI 多 Agent 漏洞挖掘知识库（CVE 复现序列 · PoC · nuclei 模板 · 证据链）
 
 **EN** — A knowledge base + toolkit for AI multi-agent vulnerability research: methodology, lab-verified evidence, PoC scripts, nuclei templates and report templates. Local labs only.
 
