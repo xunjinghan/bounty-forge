@@ -33,7 +33,7 @@ import hashlib
 import re
 import sys
 
-sys.path.insert(0, r"D:\bounty-forge\poc")
+sys.path.insert(0, r"D:\vuln-xiuxian\poc")
 import bfnet  # noqa: E402
 
 VULN_ID = "B4-SESSION-01"

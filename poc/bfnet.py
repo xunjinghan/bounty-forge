@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-bfnet.py — bounty-forge 检测脚本公共库（loop4 / n2）
+bfnet.py — vuln-xiuxian 检测脚本公共库（loop4 / n2）
 =====================================================
 职责：白名单校验、限速、只读 HTTP 探测（GET/HEAD）、sha256 取证、JSON 输出。
 

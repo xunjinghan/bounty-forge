@@ -1,9 +1,9 @@
 # t2 检测资产索引（nuclei + Python）
 
 - 产出：forge-detector，loop4 任务 t2（profileSeed n2）
-- 目录：`D:\bounty-forge\nuclei-rules\`（5 个模板）+ `D:\bounty-forge\poc\`（5 个 Python 文件）
-- 哈希总表：`D:\bounty-forge\_sha256-manifest-t2.txt`
-- 说明文档：`D:\bounty-forge\poc\README.md`（含实测数据、顶回理由、自查表）
+- 目录：`D:\vuln-xiuxian\nuclei-rules\`（5 个模板）+ `D:\vuln-xiuxian\poc\`（5 个 Python 文件）
+- 哈希总表：`D:\vuln-xiuxian\_sha256-manifest-t2.txt`
+- 说明文档：`D:\vuln-xiuxian\poc\README.md`（含实测数据、顶回理由、自查表）
 - 引擎：nuclei **v3.11.1**；Python **3.12 标准库**（无 requests / pycryptodome / 任何第三方包）
 
 ---
@@ -25,12 +25,12 @@
 
 ---
 
-## 2. 引用文件的两套路径（工作区原件 ↔ bounty-forge 归档版）
+## 2. 引用文件的两套路径（工作区原件 ↔ vuln-xiuxian 归档版）
 
 同一份文件有两处副本。**模板与脚本里写的是工作区原件路径**（archivist 按「只读复制」纪律
 保证源目录未被改动），下表给出归档版对应位置，供按 `INDEX.md` 反查时使用。
 
-| 文件（工作区原件） | 归档版（`D:\bounty-forge\`） |
+| 文件（工作区原件） | 归档版（`D:\vuln-xiuxian\`） |
 |---|---|
 | `security\learning\loop3-b-dvwa-bwapp-report-t4-20261012.md` | `reports\b-档\loop3-b-dvwa-bwapp-report-t4-20261012.md` |
 | `security\learning\loop3-c-vulhub-report-t7-20261012.md` | `reports\c-档\loop3-c-vulhub-report-t7-20261012.md` |

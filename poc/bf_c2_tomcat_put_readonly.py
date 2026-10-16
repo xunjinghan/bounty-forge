@@ -41,7 +41,7 @@ import argparse
 import re
 import sys
 
-sys.path.insert(0, r"D:\bounty-forge\poc")
+sys.path.insert(0, r"D:\vuln-xiuxian\poc")
 import bfnet  # noqa: E402
 
 VULN_ID = "C2-TOMCAT-2017-12615"

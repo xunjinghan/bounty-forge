@@ -1,4 +1,4 @@
-# bounty-forge 检测资产（loop4 / t2）
+# vuln-xiuxian 检测资产（loop4 / t2）
 
 - 产出人：forge-detector
 - 落盘时间：2026-10-13 00:2x – 01:1x（Asia/Shanghai）
@@ -156,7 +156,7 @@ PUT blocked: bfnet.probe 只允许 GET/HEAD
 ## 5. nuclei 语法校验（v3.11.1，原样粘贴）
 
 ```
-$ nuclei.exe -validate -t D:\bounty-forge\nuclei-rules\
+$ nuclei.exe -validate -t D:\vuln-xiuxian\nuclei-rules\
                      __     _
    ____  __  _______/ /__  (_)
   / __ \/ / / / ___/ / _ \/ /
@@ -165,7 +165,7 @@ $ nuclei.exe -validate -t D:\bounty-forge\nuclei-rules\
 
 		projectdiscovery.io
 
-[WRN] The given path (D:\bounty-forge\nuclei-rules\) is outside the default template directory
+[WRN] The given path (D:\vuln-xiuxian\nuclei-rules\) is outside the default template directory
       path (C:\Users\Administrator\nuclei-templates)! Referenced sub-templates with relative
       paths in workflows will be resolved against the default template directory.
 [VER] Started metrics server at localhost:9092
@@ -199,23 +199,23 @@ $py = "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\python.exe
 $env:PYTHONIOENCODING="utf-8"
 
 # B1（DVWA 未登录会 302 → 报 UNKNOWN，这是对的，不是 bug）
-& $py D:\bounty-forge\poc\bf_b1_dvwa_lfi.py -u http://192.168.56.101/dvwa --json
+& $py D:\vuln-xiuxian\poc\bf_b1_dvwa_lfi.py -u http://192.168.56.101/dvwa --json
 
 # B1 带已登录 cookie（本轮用的就是这个）
-& $py D:\bounty-forge\poc\bf_b1_dvwa_lfi.py -u http://192.168.56.101/dvwa --cookie "PHPSESSID=xxx; security=low"
+& $py D:\vuln-xiuxian\poc\bf_b1_dvwa_lfi.py -u http://192.168.56.101/dvwa --cookie "PHPSESSID=xxx; security=low"
 
 # B4
-& $py D:\bounty-forge\poc\bf_b4_dvwa_session_fixation.py -u http://192.168.56.101/dvwa --cookie "PHPSESSID=xxx; security=low"
+& $py D:\vuln-xiuxian\poc\bf_b4_dvwa_session_fixation.py -u http://192.168.56.101/dvwa --cookie "PHPSESSID=xxx; security=low"
 
 # C1 / C2 指纹（只读，永远不会自动下 vulnerable=true）
-& $py D:\bounty-forge\poc\bf_c1_shiro_fingerprint.py -u http://127.0.0.1:18081
-& $py D:\bounty-forge\poc\bf_c2_tomcat_put_readonly.py -u http://127.0.0.1:18082
+& $py D:\vuln-xiuxian\poc\bf_c1_shiro_fingerprint.py -u http://127.0.0.1:18081
+& $py D:\vuln-xiuxian\poc\bf_c2_tomcat_put_readonly.py -u http://127.0.0.1:18082
 
 # nuclei：默认跑 4 个非破坏模板
-& $nuc -t D:\bounty-forge\nuclei-rules\ -u http://192.168.56.101/dvwa
+& $nuc -t D:\vuln-xiuxian\nuclei-rules\ -u http://192.168.56.101/dvwa
 
 # nuclei：跑 PUT 那个（**破坏性，必须是授权靶场**）
-& $nuc -t D:\bounty-forge\nuclei-rules\ -u http://127.0.0.1:18082 -include-tags destructive
+& $nuc -t D:\vuln-xiuxian\nuclei-rules\ -u http://127.0.0.1:18082 -include-tags destructive
 ```
 
 退出码：`0` = 命中/疑似，`1` = 未命中/UNKNOWN，`2` = 白名单拒绝。

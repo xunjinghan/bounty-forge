@@ -27,7 +27,7 @@ info:
   classification:
     cwe-id: CWE-22, CWE-98
   metadata:
-    bounty-forge: loop4-t2
+    vuln-xiuxian: loop4-t2
     loop3-finding-id: B1-LFI-01
     destructive: "false"
     http-methods: GET

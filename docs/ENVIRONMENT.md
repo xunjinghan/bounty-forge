@@ -110,7 +110,7 @@ winget install --id Cloudflare.Warp -e
 | --- | --- | --- |
 | `git clone` 卡住 / `TLS handshake timeout` | `github.com` 握手被干扰 | 开官方 WARP（第 4 节）、改用 SSH、或从 Release 附件下载 |
 | 「Download ZIP」失败 | `codeload.github.com` 不通 | 用 `git clone`（配代理），或下 Release 附件 |
-| `docker pull` 卡住 / `dial tcp ... i/o timeout` | Docker Hub 直连不通 | 配镜像加速（可参考 [vuln-labs](https://github.com/xunwmw/vuln-labs) 的 `scripts/pull-with-mirror.*`，或 `daemon.json` 里的 `registry-mirrors`） |
+| `docker pull` 卡住 / `dial tcp ... i/o timeout` | Docker Hub 直连不通 | 配镜像加速（可参考 [vuln-lab-quanjiadou](https://github.com/xunwmw/vuln-lab-quanjiadou) 的 `scripts/pull-with-mirror.*`，或 `daemon.json` 里的 `registry-mirrors`） |
 | `python bf_*.py` 报下标/类型错误 | Python 低于 3.10 | 升到 3.10+ |
 | 脚本提示「目标不在白名单」 | **护栏生效，预期行为** | 目标只能是 `127.0.0.1` / `localhost` / `192.168.56.x` |
 | `1.1.1.1` 打不开 | 官网被墙 | 用 `winget` 或 `developers.cloudflare.com` |

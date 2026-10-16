@@ -35,7 +35,7 @@ import re
 import sys
 from urllib.parse import quote
 
-sys.path.insert(0, r"D:\bounty-forge\poc")
+sys.path.insert(0, r"D:\vuln-xiuxian\poc")
 import bfnet  # noqa: E402
 
 VULN_ID = "B1-LFI-01"

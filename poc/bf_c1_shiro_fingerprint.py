@@ -45,7 +45,7 @@ from __future__ import annotations
 import argparse
 import sys
 
-sys.path.insert(0, r"D:\bounty-forge\poc")
+sys.path.insert(0, r"D:\vuln-xiuxian\poc")
 import bfnet  # noqa: E402
 
 VULN_ID = "C1-SHIRO-2016-4437"

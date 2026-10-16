@@ -53,7 +53,7 @@ docs(readme): 更新安装说明
 
 ## 想一起维护这个仓库？（申请项目合作人）
 
-如果你不只是想提个 PR，而是想一起长期维护，可以提交 [合作者申请](https://github.com/xunwmw/bounty-forge/issues/new?template=collaborator_request.md)。
+如果你不只是想提个 PR，而是想一起长期维护，可以提交 [合作者申请](https://github.com/xunwmw/vuln-xiuxian/issues/new?template=collaborator_request.md)。
 我会在 **Settings → Collaborators** 里把你加进来，之后你有写权限（可建分支、提 PR、管 Issue）。
 
 申请时顺手写清楚：你想做哪块（模板 / 方法论 / CVE 复现 / 报告规范）、大概能投入多少时间。不想申请也完全可以——直接提 Issue 或 PR 一样欢迎。

@@ -9,7 +9,7 @@
 ![PoC](https://img.shields.io/badge/检测脚本-4-purple)
 ![Nuclei](https://img.shields.io/badge/Nuclei模板-5-red)
 ![CVE](https://img.shields.io/badge/CVE序列-64项-green)
-![CI](https://github.com/xunwmw/bounty-forge/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/xunwmw/vuln-xiuxian/actions/workflows/ci.yml/badge.svg)
 
 AI 多 Agent 协作驱动的漏洞挖掘知识库——从侦察、检测、验证到报告，覆盖赏金猎手全流程。所有检测规则与结论均基于本地靶场实战验证，非破坏性检测优先。
 
@@ -60,7 +60,7 @@ AI 多 Agent 协作驱动的漏洞挖掘知识库——从侦察、检测、验�
 ## 目录结构
 
 ```
-bounty-forge/
+vuln-xiuxian/
 ├── README.md                          # 本文件：项目介绍与快速索引
 ├── LICENSE                            # MIT 许可证
 ├── .gitignore                         # Git 忽略规则
@@ -243,8 +243,8 @@ Java Runtime.exec() 是异步的，sleep 命令的执行时间不会反映在 HT
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/xunwmw/bounty-forge.git
-cd bounty-forge
+git clone https://github.com/xunwmw/vuln-xiuxian.git
+cd vuln-xiuxian
 ```
 
 > 国内直连 `github.com` 可能握手超时（2026-10-16 实测），`codeload.github.com` 的「Download ZIP」也常不通。
@@ -342,7 +342,7 @@ python bf_c1_shiro_fingerprint.py -u http://127.0.0.1:8080
 4. **新的 CVE 复现报告**（带完整证据）
 5. **平台支持**（补天、CNVD 等报告模板）
 
-想直接一起维护这个仓库（而不只是提 PR），可以走 [合作者申请](https://github.com/xunwmw/bounty-forge/issues/new?template=collaborator_request.md)，见文末「反馈 · 合作」。
+想直接一起维护这个仓库（而不只是提 PR），可以走 [合作者申请](https://github.com/xunwmw/vuln-xiuxian/issues/new?template=collaborator_request.md)，见文末「反馈 · 合作」。
 
 ### 贡献流程
 
@@ -416,9 +416,9 @@ flowchart LR
 
 | 你想做的事 | 点哪里 |
 | --- | --- |
-| 跑不起来 / 有报错 | [提 Bug 报告](https://github.com/xunwmw/bounty-forge/issues/new?template=bug_report.md) |
-| 想要新内容 / 提意见 | [提功能建议](https://github.com/xunwmw/bounty-forge/issues/new?template=feature_request.md) |
-| **想一起做这个项目（申请项目合作人）** | [提交合作者申请](https://github.com/xunwmw/bounty-forge/issues/new?template=collaborator_request.md) |
+| 跑不起来 / 有报错 | [提 Bug 报告](https://github.com/xunwmw/vuln-xiuxian/issues/new?template=bug_report.md) |
+| 想要新内容 / 提意见 | [提功能建议](https://github.com/xunwmw/vuln-xiuxian/issues/new?template=feature_request.md) |
+| **想一起做这个项目（申请项目合作人）** | [提交合作者申请](https://github.com/xunwmw/vuln-xiuxian/issues/new?template=collaborator_request.md) |
 | 已经改好了 | 直接发 Pull Request（约定见 [CONTRIBUTING.md](CONTRIBUTING.md)） |
 
 「申请项目合作人」就是 GitHub 的仓库协作者（Collaborator）：你提申请，我会在 **Settings → Collaborators** 里把你加进来，

@@ -2,7 +2,7 @@
 # NOTE: pure-ASCII source. Windows PowerShell 5.1 reads no-BOM .ps1 as ANSI,
 # so non-ASCII literals below are built from code points to stay safe.
 param(
-  [string]$Dir = 'D:\bounty-forge\reports\submit',
+  [string]$Dir = 'D:\vuln-xiuxian\reports\submit',
   [string]$Pattern = '*C1-Shiro.md'
 )
 $ErrorActionPreference = 'Stop'

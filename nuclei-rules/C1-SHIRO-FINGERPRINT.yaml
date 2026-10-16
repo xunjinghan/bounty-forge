@@ -35,7 +35,7 @@ info:
     cve-id: CVE-2016-4437
     cwe-id: CWE-502, CWE-798
   metadata:
-    bounty-forge: loop4-t2
+    vuln-xiuxian: loop4-t2
     loop3-finding-id: C1-SHIRO-2016-4437
     destructive: "false"
     http-methods: GET

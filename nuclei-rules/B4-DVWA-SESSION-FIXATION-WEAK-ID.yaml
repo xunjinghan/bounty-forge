@@ -24,7 +24,7 @@ info:
   classification:
     cwe-id: CWE-384, CWE-330
   metadata:
-    bounty-forge: loop4-t2
+    vuln-xiuxian: loop4-t2
     loop3-finding-id: B4-SESSION-01
     destructive: "false"
     http-methods: GET
@@ -34,7 +34,7 @@ info:
     security-cookie-name: "security"
     security-cookie-trap: "security_level 是 bWAPP 的命名；DVWA 读的是 security。投错 = 假阴性"
     loop3-evidence: "low 档自选 SID 登录后原样保留、陌生客户端复用 3/3；impossible 档 preserved=false 1/1；low 档 weak_id 1..7 完美自增 7/7"
-    caveat: "本模板无登录动作，只能观察「服务端是否做了会话再生成」。完整的固定→复用链见 D:\\bounty-forge\\poc\\bf_b4_dvwa_session_fixation.py"
+    caveat: "本模板无登录动作，只能观察「服务端是否做了会话再生成」。完整的固定→复用链见 D:\\vuln-xiuxian\\poc\\bf_b4_dvwa_session_fixation.py"
 
 http:
   # 判据：投一个服务端不可能预先创建过的自造会话 ID
