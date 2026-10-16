@@ -1,23 +1,12 @@
-# 更新日志
+﻿# Changelog
 
-本项目所有重要变更都记录在此文件中。
+## v1.0.0 — 2026-10-16
 
-格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
-版本号遵循 [Semantic Versioning](https://semver.org/lang/zh-CN/)。
+首个公开版本。
 
-## [Unreleased]
+- 方法论文档：证据链↔方法论映射、挖洞避坑手册、报告规范与 107 项自查清单
+- CVE 序列：执行顺序表（64 项）+ 靶场清单
+- 实战产物：PoC 脚本、nuclei 模板、提交版报告范文
+- 新增：SECURITY.md、docs/NAVIGATION.md（长索引入口页）、docs/PUBLISHING.md（公开/私有边界）
+- 新增 CI：相对链接体检 + 凭据扫描
 
-### 新增
-### 修复
-### 变更
-### 废弃
-
----
-
-## [1.0.0] - 2026-10-13
-
-### 新增
-- 初始版本发布
-- 核心功能模块
-- 安全护栏与审计日志
-- 结构化证据存储

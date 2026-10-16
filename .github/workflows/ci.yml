@@ -40,7 +40,8 @@ jobs:
         run: |
           set -e
           PATTERNS='github_pat_|ghp_[A-Za-z0-9]{30,}|sk-[A-Za-z0-9]{32,}|AIza[A-Za-z0-9_-]{30,}'
-          if grep -rInE "$PATTERNS" --exclude-dir=.git --exclude-dir=.github . ; then
+          # 注意：docs/PUBLISHING.md 里为了教人自查，本身就写了这些模式，必须排除（否则自匹配）
+          if grep -rInE "$PATTERNS" --exclude-dir=.git --exclude-dir=.github --exclude=PUBLISHING.md . ; then
             echo "::error::发现疑似真实凭据，请脱敏后再提交（靶场样例私钥请标注来源）"
             exit 1
           fi
