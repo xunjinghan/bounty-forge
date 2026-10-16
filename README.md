@@ -355,3 +355,12 @@ git push origin feature/your-contribution
 ---
 
 > **最后提醒**：安全是一把双刃剑。本项目的所有内容都是为了帮助你理解漏洞原理、提升防御能力。请始终在授权范围内进行测试，不要用学到的知识做任何违法的事情。
+
+---
+
+## 从这里开始
+
+- 想快速了解：本 README 下面就是
+- 想按主题跳转：[docs/NAVIGATION.md](docs/NAVIGATION.md)（130KB 索引的入口页）
+- 想贡献或发布：[docs/PUBLISHING.md](docs/PUBLISHING.md)（公开/私有边界清单）
+
